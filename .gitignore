@@ -26,3 +26,5 @@ Carrot quest Onboarding _standalone_.html
 # Логи
 *.log
 npm-debug.log*
+
+.vercel
