@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrot Quest — Детальный анализ продукта</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  :root {
+    --primary: #6C47FF;
+    --primary-light: #EDE9FF;
+    --accent: #FF6B35;
+    --green: #22C55E;
+    --blue: #3B82F6;
+    --gray-50: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-600: #475569;
+    --gray-800: #1E293B;
+    --text: #0F172A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); background: #fff; font-size: 14px; line-height: 1.6; }
+
+  /* COVER */
+  .cover {
+    background: linear-gradient(135deg, #1a0533 0%, #3d1a7a 50%, #6C47FF 100%);
+    color: white; padding: 80px 60px; min-height: 280px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .cover .badge { background: rgba(255,255,255,0.15); display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px; }
+  .cover h1 { font-size: 42px; font-weight: 800; margin-bottom: 12px; }
+  .cover .subtitle { font-size: 18px; opacity: 0.8; margin-bottom: 32px; }
+  .cover .meta { display: flex; gap: 40px; flex-wrap: wrap; }
+  .cover .meta-item { opacity: 0.7; font-size: 13px; }
+  .cover .meta-item strong { display: block; opacity: 1; font-size: 15px; }
+
+  /* LAYOUT */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+  section { padding: 60px 0; border-bottom: 1px solid var(--gray-200); }
+  section:last-child { border-bottom: none; }
+
+  /* HEADINGS */
+  .section-header { margin-bottom: 36px; }
+  .section-label { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); background: var(--primary-light); padding: 4px 12px; border-radius: 4px; margin-bottom: 12px; }
+  h2 { font-size: 30px; font-weight: 700; color: var(--gray-800); margin-bottom: 8px; }
+  h3 { font-size: 20px; font-weight: 600; color: var(--gray-800); margin: 32px 0 16px; }
+  h4 { font-size: 15px; font-weight: 600; color: var(--gray-800); margin: 20px 0 10px; }
+  .section-desc { color: var(--gray-600); font-size: 15px; max-width: 720px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+  .card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px; }
+  .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card h4 { margin: 0 0 8px; font-size: 16px; }
+  .card p { color: var(--gray-600); font-size: 13px; }
+
+  /* MODULE MAP */
+  .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 24px; }
+  .module-card { border-radius: 10px; padding: 20px; border-left: 4px solid; }
+  .module-card.core { background: #EDE9FF; border-color: var(--primary); }
+  .module-card.engagement { background: #FFF7ED; border-color: var(--accent); }
+  .module-card.support { background: #ECFDF5; border-color: var(--green); }
+  .module-card.analytics { background: #EFF6FF; border-color: var(--blue); }
+  .module-card.settings { background: #F8FAFC; border-color: var(--gray-600); }
+  .module-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .module-card ul { list-style: none; padding: 0; }
+  .module-card ul li { font-size: 12px; color: var(--gray-600); padding: 2px 0; }
+  .module-card ul li::before { content: '→ '; color: var(--gray-600); }
+
+  /* DIAGRAMS */
+  .diagram-wrapper { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 32px; margin: 24px 0; overflow-x: auto; }
+  .diagram-title { font-size: 13px; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+
+  /* USER STORIES */
+  .us-grid { display: flex; flex-direction: column; gap: 20px; }
+  .us-card { border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; }
+  .us-header { padding: 16px 24px; display: flex; align-items: center; gap: 16px; background: var(--gray-50); }
+  .us-id { background: var(--primary); color: white; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
+  .us-title { font-weight: 600; font-size: 15px; }
+  .us-epic { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+  .epic-leads { background: #EDE9FF; color: var(--primary); }
+  .epic-dialogs { background: #ECFDF5; color: #16A34A; }
+  .epic-trigger { background: #FFF7ED; color: #EA580C; }
+  .epic-chains { background: #FEF3C7; color: #D97706; }
+  .epic-bots { background: #F0FDF4; color: #15803D; }
+  .epic-ai { background: #EFF6FF; color: #1D4ED8; }
+  .epic-settings { background: #F8FAFC; color: #475569; }
+  .us-body { padding: 20px 24px; }
+  .us-story { font-size: 14px; color: var(--gray-800); font-style: italic; margin-bottom: 16px; padding: 12px 16px; background: #FAFAFA; border-left: 3px solid var(--primary); border-radius: 0 8px 8px 0; }
+  .us-ac-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-600); margin-bottom: 10px; }
+  .us-ac-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .us-ac-list li { font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
+  .us-ac-list li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  /* DATA MODEL */
+  .entity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 24px; }
+  .entity-card { border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+  .entity-header { background: var(--primary); color: white; padding: 12px 16px; font-weight: 700; font-size: 14px; }
+  .entity-body { padding: 16px; }
+  .field { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--gray-100); font-size: 12px; }
+  .field:last-child { border-bottom: none; }
+  .field-name { font-weight: 500; color: var(--gray-800); }
+  .field-type { color: var(--gray-600); font-family: monospace; }
+
+  /* INTEGRATIONS */
+  .int-section { margin-bottom: 32px; }
+  .int-section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-600); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--gray-200); }
+  .int-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .int-tag { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid; }
+  .int-tag.active { background: #ECFDF5; border-color: #86EFAC; color: #16A34A; }
+  .int-tag.available { background: var(--gray-50); border-color: var(--gray-200); color: var(--gray-600); }
+  .int-tag.premium { background: #FFF7ED; border-color: #FED7AA; color: #EA580C; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+  .data-table th { background: var(--gray-800); color: white; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+  .data-table tr:hover td { background: var(--gray-50); }
+
+  /* BOTTLENECKS */
+  .issue-card { border-radius: 10px; padding: 20px; margin-bottom: 16px; border-left: 4px solid; }
+  .issue-card.critical { background: #FEF2F2; border-color: #EF4444; }
+  .issue-card.medium { background: #FFFBEB; border-color: #F59E0B; }
+  .issue-card.growth { background: #ECFDF5; border-color: var(--green); }
+  .issue-card h4 { margin: 0 0 8px; font-size: 14px; font-weight: 600; }
+  .issue-card p { font-size: 13px; color: var(--gray-600); margin: 0; }
+  .severity { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
+  .severity.critical { background: #EF4444; color: white; }
+  .severity.medium { background: #F59E0B; color: white; }
+  .severity.growth { background: var(--green); color: white; }
+
+  /* SUBSCRIPTION */
+  .plan-card { background: linear-gradient(135deg, var(--primary), #9F67FF); color: white; border-radius: 16px; padding: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 24px; }
+  .plan-stat { }
+  .plan-stat-label { opacity: 0.7; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .plan-stat-value { font-size: 24px; font-weight: 700; }
+  .plan-stat-sub { font-size: 12px; opacity: 0.7; }
+
+  /* USE CASES */
+  .uc-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+  .uc-table th { background: var(--gray-800); color: white; padding: 10px 14px; text-align: left; font-weight: 600; }
+  .uc-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+  .uc-table .actor { font-weight: 600; color: var(--primary); }
+  .uc-table .priority-high { color: #EF4444; font-weight: 600; }
+  .uc-table .priority-med { color: #F59E0B; font-weight: 600; }
+  .uc-table .priority-low { color: var(--green); font-weight: 600; }
+
+  /* NAV */
+  .toc { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px; margin: 32px 40px; }
+  .toc h3 { margin: 0 0 16px; font-size: 16px; }
+  .toc ol { padding-left: 20px; columns: 2; column-gap: 40px; }
+  .toc li { margin-bottom: 8px; font-size: 13px; }
+  .toc a { color: var(--primary); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .plan-card { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .container { padding: 0 20px; }
+    .cover { padding: 40px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="container">
+    <span class="badge">Product Analysis</span>
+    <h1>🥕 Carrot Quest</h1>
+    <p class="subtitle">Детальный анализ продукта: C4-диаграммы, User Stories, Use Cases, карта продукта</p>
+    <div class="meta">
+      <div class="meta-item"><strong>B2B SaaS</strong>Тип продукта</div>
+      <div class="meta-item"><strong>Customer Communication &amp; Marketing Automation</strong>Категория</div>
+      <div class="meta-item"><strong>Маркетинг 1000 | 12 месяцев</strong>Тарифный план</div>
+      <div class="meta-item"><strong>Май 2026</strong>Дата анализа</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h3>📋 Содержание</h3>
+  <ol>
+    <li><a href="#overview">Обзор продукта</a></li>
+    <li><a href="#product-map">Карта продукта</a></li>
+    <li><a href="#c4-l1">C4 L1: System Context</a></li>
+    <li><a href="#c4-l2">C4 L2: Container Diagram</a></li>
+    <li><a href="#c4-l3">C4 L3: Component Diagram</a></li>
+    <li><a href="#data-model">Модель данных</a></li>
+    <li><a href="#user-stories">User Stories с критериями</a></li>
+    <li><a href="#use-cases">Use Cases</a></li>
+    <li><a href="#integrations">Карта интеграций</a></li>
+    <li><a href="#subscription">Подписка и монетизация</a></li>
+    <li><a href="#bottlenecks">Узкие места и точки роста</a></li>
+  </ol>
+</div>
+
+<!-- 1. OVERVIEW -->
+<section id="overview">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">01 — Обзор</span>
+    <h2>Что такое Carrot Quest</h2>
+    <p class="section-desc">Carrot Quest — B2B SaaS платформа для клиентских коммуникаций и маркетинговой автоматизации. Объединяет live-чат, триггерные сообщения, чат-боты, AI-поддержку и CRM-инструменты в единой экосистеме.</p>
+  </div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">💬</div><h4>Омниканальные коммуникации</h4><p>Единый inbox: чат на сайте, Telegram, VK, WhatsApp, Facebook, Viber, Instagram, email — все в одном месте</p></div>
+    <div class="card"><div class="card-icon">⚡</div><h4>Маркетинговая автоматизация</h4><p>Триггерные сообщения по событиям и расписанию, цепочки сообщений с визуальным builder-ом, A/B тесты</p></div>
+    <div class="card"><div class="card-icon">🤖</div><h4>Чат-боты и AI-бот</h4><p>Визуальный конструктор чат-ботов, AI-поддержка на базе LLM с обучением на базе знаний и веб-страницах</p></div>
+    <div class="card"><div class="card-icon">👥</div><h4>База лидов (CRM-lite)</h4><p>Профили пользователей с событиями, свойствами, сегментацией. Импорт/экспорт, группы, списки</p></div>
+    <div class="card"><div class="card-icon">📊</div><h4>Аналитика</h4><p>Воронки конверсии, отчёты по событиям, аналитика диалогов и обращений, статистика рассылок</p></div>
+    <div class="card"><div class="card-icon">🔗</div><h4>Интеграции (30+)</h4><p>CRM (amoCRM, Битрикс24), мессенджеры, аналитика (Mixpanel, Яндекс.Метрика), CMS, коллтрекинг</p></div>
+  </div>
+
+  <h3>Технологический стек</h3>
+  <table class="data-table">
+    <tr><th>Слой</th><th>Технологии</th><th>Детали</th></tr>
+    <tr><td>Frontend</td><td>Angular + AngularJS + Vue.js + jQuery 3.6.1</td><td>Гибридная архитектура (legacy AngularJS + миграция на Angular)</td></tr>
+    <tr><td>SPA routing</td><td>AngularJS UI-Router</td><td>Состояния вида app.content.* для основных разделов</td></tr>
+    <tr><td>REST API</td><td>api.gamma.k8s-dev.carrotquest.io/api/v3</td><td>Apps/{appId}/... — ресурсы привязаны к app ID</td></tr>
+    <tr><td>Auth</td><td>Session-based (cookie)</td><td>App ID = 4 для тестового окружения</td></tr>
+    <tr><td>CDN / Files</td><td>files.carrotquest.io</td><td>Аватары, вложения, медиафайлы</td></tr>
+    <tr><td>Charts</td><td>amCharts</td><td>Используется для аналитических графиков</td></tr>
+    <tr><td>Push домен</td><td>pushgrow.io</td><td>Собственный Web Push сервис</td></tr>
+    <tr><td>Email</td><td>app4.mail.gamma.k8s-dev.carrotquest.io</td><td>Собственный SMTP для отправки</td></tr>
+    <tr><td>Деплой</td><td>Kubernetes (k8s-dev)</td><td>Микросервисная архитектура</td></tr>
+    <tr><td>Платежи</td><td>Stripe + CloudPayments</td><td>Международные и российские платежи</td></tr>
+    <tr><td>Аналитика</td><td>Google Tag Manager (GTM-PHNG63V)</td><td>Собственный GTM контейнер</td></tr>
+    <tr><td>Chat SDK</td><td>/cdn/api.min.js</td><td>Встраивается на сайты клиентов</td></tr>
+  </table>
+</div>
+</section>
+
+<!-- 2. PRODUCT MAP -->
+<section id="product-map">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">02 — Карта продукта</span>
+    <h2>Полная карта модулей</h2>
+    <p class="section-desc">Все разделы и сущности продукта, сгруппированные по функциональным областям.</p>
+  </div>
+  <div class="module-grid">
+    <div class="module-card core">
+      <h4>🏠 Дашборд</h4>
+      <ul>
+        <li>KPI-метрики</li>
+        <li>Онбординг чеклист</li>
+        <li>Быстрые действия</li>
+        <li>Сводка активности</li>
+      </ul>
+    </div>
+    <div class="module-card core">
+      <h4>👥 База лидов</h4>
+      <ul>
+        <li>Список пользователей</li>
+        <li>Карточка пользователя</li>
+        <li>Свойства и события</li>
+        <li>Сегменты</li>
+        <li>Группы пользователей</li>
+        <li>Импорт / Экспорт</li>
+        <li>Фильтры и поиск</li>
+      </ul>
+    </div>
+    <div class="module-card support">
+      <h4>💬 Диалоги</h4>
+      <ul>
+        <li>Единый inbox</li>
+        <li>Диалоги (чат)</li>
+        <li>Обращения (тикеты)</li>
+        <li>Фильтры / Теги</li>
+        <li>Назначение оператора</li>
+        <li>Шаблоны ответов</li>
+        <li>Аналитика диалогов</li>
+      </ul>
+    </div>
+    <div class="module-card engagement">
+      <h4>⚡ Триггерные сообщения</h4>
+      <ul>
+        <li>По событиям</li>
+        <li>По расписанию</li>
+        <li>Редактор содержания</li>
+        <li>Условия отправки</li>
+        <li>A/B тест</li>
+        <li>Папки / шаблоны</li>
+        <li>Статистика</li>
+      </ul>
+    </div>
+    <div class="module-card engagement">
+      <h4>🔗 Цепочки сообщений</h4>
+      <ul>
+        <li>Визуальный builder</li>
+        <li>Блоки: 10 каналов</li>
+        <li>Логика: 6 типов</li>
+        <li>Финальные блоки</li>
+        <li>Шаблоны цепочек</li>
+        <li>Поделиться цепочкой</li>
+      </ul>
+    </div>
+    <div class="module-card core">
+      <h4>🤖 Чат-боты</h4>
+      <ul>
+        <li>Визуальный конструктор</li>
+        <li>Лид-боты</li>
+        <li>Сервисные боты</li>
+        <li>Telegram-боты</li>
+        <li>Список ботов</li>
+        <li>Аналитика ботов</li>
+      </ul>
+    </div>
+    <div class="module-card analytics">
+      <h4>🧠 AI-бот</h4>
+      <ul>
+        <li>AI-поддержка</li>
+        <li>Обучение: URL/сайт</li>
+        <li>Обучение: База знаний</li>
+        <li>Источники контента</li>
+        <li>Тест AI-бота</li>
+        <li>Запуск в чате</li>
+      </ul>
+    </div>
+    <div class="module-card analytics">
+      <h4>📊 Аналитика</h4>
+      <ul>
+        <li>Воронки</li>
+        <li>Отчёт по событиям</li>
+        <li>Ручные рассылки</li>
+        <li>Аналитика диалогов</li>
+        <li>Аналитика обращений</li>
+      </ul>
+    </div>
+    <div class="module-card support">
+      <h4>📚 База знаний</h4>
+      <ul>
+        <li>Статьи базы знаний</li>
+        <li>Категории</li>
+        <li>Поиск по статьям</li>
+        <li>Источник для AI-бота</li>
+      </ul>
+    </div>
+    <div class="module-card settings">
+      <h4>⚙️ Настройки</h4>
+      <ul>
+        <li>Информация / Компания</li>
+        <li>Настройки чата</li>
+        <li>Скрипт установки</li>
+        <li>Отправители (email)</li>
+        <li>Внешний вид email</li>
+        <li>Настройки поп-апа</li>
+        <li>Web Push (pushgrow)</li>
+        <li>GDPR / Персданные</li>
+      </ul>
+    </div>
+    <div class="module-card settings">
+      <h4>🔗 Интеграции</h4>
+      <ul>
+        <li>Мессенджеры (8+)</li>
+        <li>CMS (6)</li>
+        <li>CRM (4)</li>
+        <li>Аналитика (3)</li>
+        <li>Коллтрекинг</li>
+        <li>Другие (5)</li>
+        <li>AI/Боты (2)</li>
+      </ul>
+    </div>
+    <div class="module-card settings">
+      <h4>💳 Подписка</h4>
+      <ul>
+        <li>Тариф и лимиты</li>
+        <li>Пакетные модули</li>
+        <li>Дополнительные модули</li>
+        <li>Платёжная информация</li>
+        <li>История платежей</li>
+        <li>FAQ по оплате</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 3. C4 L1 -->
+<section id="c4-l1">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">03 — C4 Level 1</span>
+    <h2>System Context Diagram</h2>
+    <p class="section-desc">Верхнеуровневый вид: Carrot Quest в контексте внешних акторов и систем.</p>
+  </div>
+  <div class="diagram-wrapper">
+    <div class="diagram-title">C4 — System Context (Level 1)</div>
+    <div class="mermaid">
+graph TB
+    subgraph Customers["🏢 Клиенты Carrot Quest (B2B)"]
+        Admin["👤 Администратор<br/>(Владелец аккаунта)"]
+        Marketer["📣 Маркетолог<br/>(Запускает кампании)"]
+        Operator["🎧 Оператор поддержки<br/>(Отвечает на диалоги)"]
+    end
+
+    subgraph EndUsers["👥 Конечные пользователи клиентов"]
+        Visitor["🌐 Посетитель сайта<br/>(Анонимный)"]
+        Lead["👤 Лид<br/>(Идентифицированный)"]
+    end
+
+    CQ["🥕 Carrot Quest<br/><b>Customer Communication<br/>&amp; Marketing Automation Platform</b><br/><br/>SaaS · B2B · REST API"]
+
+    subgraph Channels["📱 Каналы коммуникации"]
+        TG["Telegram"]
+        VK["ВКонтакте"]
+        WA["WhatsApp (edna)"]
+        FB["Facebook Messenger"]
+        IG["Instagram"]
+        Viber["Viber"]
+        Email["Email (SMTP)"]
+        Push["Web Push<br/>(pushgrow.io)"]
+    end
+
+    subgraph External["🔌 Внешние системы"]
+        CRM["CRM<br/>amoCRM · Битрикс24<br/>RetailCRM"]
+        Analytics["Аналитика<br/>Mixpanel · Яндекс.Метрика<br/>Roistat"]
+        Payment["Платежи<br/>Stripe · CloudPayments"]
+        AI_LLM["AI / LLM<br/>Dialogflow · AWS Lambda"]
+        CDN["CDN<br/>files.carrotquest.io"]
+    end
+
+    Admin -->|"Настройки, интеграции, подписка"| CQ
+    Marketer -->|"Кампании, боты, цепочки"| CQ
+    Operator -->|"Диалоги, тикеты"| CQ
+    Visitor -->|"Chat SDK (api.min.js)"| CQ
+    Lead -->|"Сообщения, взаимодействие"| CQ
+    CQ -->|"Сообщения"| Channels
+    CQ <-->|"Двусторонняя синхронизация"| CRM
+    CQ -->|"Передача событий"| Analytics
+    CQ -->|"Биллинг"| Payment
+    CQ <-->|"AI запросы/ответы"| AI_LLM
+    CQ -->|"Файлы, медиа"| CDN
+
+    style CQ fill:#6C47FF,color:#fff,stroke:#4A2FD9
+    style Customers fill:#EDE9FF,stroke:#6C47FF
+    style EndUsers fill:#F0FDF4,stroke:#22C55E
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 4. C4 L2 -->
+<section id="c4-l2">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">04 — C4 Level 2</span>
+    <h2>Container Diagram</h2>
+    <p class="section-desc">Технические контейнеры системы Carrot Quest и их взаимодействие.</p>
+  </div>
+  <div class="diagram-wrapper">
+    <div class="diagram-title">C4 — Container Diagram (Level 2)</div>
+    <div class="mermaid">
+graph TB
+    Browser["🌐 Browser<br/>(Оператор / Маркетолог / Админ)"]
+    CustomerSite["🖥️ Сайт клиента<br/>(Посетители / Лиды)"]
+
+    subgraph CQ_System["☁️ Carrot Quest Platform (Kubernetes)"]
+        SPA["📱 SPA Frontend<br/><b>Angular + AngularJS + Vue.js</b><br/>UI роутинг: AngularJS UI-Router<br/>Charts: amCharts"]
+
+        ChatSDK["📦 Chat SDK<br/><b>/cdn/api.min.js</b><br/>Встраивается на сайт клиента<br/>WebSocket соединение"]
+
+        API["⚙️ REST API<br/><b>api.v3 / Node.js или Python</b><br/>/api/v3/apps/{appId}/...<br/>Auth: Session cookie"]
+
+        BotEngine["🤖 Bot Engine<br/><b>Chatbot Runtime</b><br/>Выполнение сценариев ботов<br/>Flow-based логика"]
+
+        AIEngine["🧠 AI Engine<br/><b>LLM Integration</b><br/>Обучение на KB + URL<br/>Inference для ответов"]
+
+        TriggerEngine["⚡ Trigger Engine<br/><b>Message Scheduler</b><br/>Событийные триггеры<br/>Cron-расписание"]
+
+        ChainEngine["🔗 Chain Runner<br/><b>Message Chain Executor</b><br/>Обход графа цепочки<br/>Условная логика"]
+
+        Database["🗄️ Database<br/><b>PostgreSQL</b><br/>Пользователи, диалоги,<br/>события, сообщения"]
+
+        Cache["⚡ Cache<br/><b>Redis</b><br/>Сессии, очереди,<br/>real-time состояние"]
+
+        FileStorage["📁 File Storage<br/><b>files.carrotquest.io</b><br/>Аватары, вложения,<br/>медиафайлы"]
+
+        EmailService["📧 Email Service<br/><b>SMTP Relay</b><br/>app4.mail.*.carrotquest.io<br/>Transactional + Marketing"]
+
+        PushService["🔔 Push Service<br/><b>pushgrow.io</b><br/>Web Push уведомления<br/>Подписка / отписка"]
+    end
+
+    Browser -->|"HTTPS"| SPA
+    CustomerSite -->|"JS embed"| ChatSDK
+    SPA -->|"REST API calls"| API
+    ChatSDK -->|"WebSocket / REST"| API
+    API <-->|"Read/Write"| Database
+    API <-->|"Cache/Queue"| Cache
+    API -->|"Trigger events"| TriggerEngine
+    API -->|"Bot commands"| BotEngine
+    API -->|"AI queries"| AIEngine
+    TriggerEngine -->|"Chain events"| ChainEngine
+    TriggerEngine -->|"Send email"| EmailService
+    TriggerEngine -->|"Send push"| PushService
+    ChainEngine -->|"Execute messages"| EmailService
+    API -->|"Upload/Download"| FileStorage
+
+    style SPA fill:#6C47FF,color:#fff
+    style API fill:#1E293B,color:#fff
+    style Database fill:#3B82F6,color:#fff
+    style AIEngine fill:#8B5CF6,color:#fff
+    style BotEngine fill:#22C55E,color:#fff
+    style CQ_System fill:#F8FAFC,stroke:#CBD5E1
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 5. C4 L3 -->
+<section id="c4-l3">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">05 — C4 Level 3</span>
+    <h2>Component Diagram</h2>
+    <p class="section-desc">Детализация компонентов SPA Frontend и REST API.</p>
+  </div>
+  <div class="diagram-wrapper">
+    <div class="diagram-title">C4 — Component Diagram: SPA Frontend (Level 3)</div>
+    <div class="mermaid">
+graph LR
+    subgraph Router["UI-Router (AngularJS)"]
+        R["app.content.*"]
+    end
+
+    subgraph Modules["SPA Modules"]
+        Dashboard["🏠 DashboardModule<br/>KPI · Онбординг"]
+        Users["👥 UsersModule<br/>База лидов · Сегменты<br/>Группы · Импорт"]
+        Conversations["💬 ConversationsModule<br/>Inbox · Диалоги<br/>Тикеты · Теги"]
+        Messages["⚡ MessagesModule<br/>Триггеры · Расписание<br/>Редактор · A/B тест"]
+        Chains["🔗 ChainsModule<br/>Flow Builder Canvas<br/>Блоки · Шаблоны"]
+        Bots["🤖 BotsModule<br/>Bot Builder Canvas<br/>Лид-боты · Tg-боты"]
+        AIBot["🧠 AIBotModule<br/>Обучение · Источники<br/>Тест · Деплой"]
+        Analytics["📊 AnalyticsModule<br/>Воронки · События<br/>Рассылки · Диалоги"]
+        KB["📚 KnowledgeBaseModule<br/>Статьи · Категории"]
+        Settings["⚙️ SettingsModule<br/>Общие · Чат · Email<br/>WebPush · GDPR"]
+        Integrations["🔗 IntegrationsModule<br/>30+ интеграций<br/>OAuth flows"]
+        Subscription["💳 SubscriptionModule<br/>Тариф · Модули<br/>Платёжные данные"]
+    end
+
+    subgraph Shared["Shared Services"]
+        AuthSvc["AuthService<br/>(Session cookie)"]
+        ApiSvc["ApiService<br/>(HTTP interceptors)"]
+        WSSvc["WebSocketService<br/>(Real-time)"]
+        EventBus["EventBusService<br/>(Cross-module)"]
+    end
+
+    R --> Dashboard & Users & Conversations & Messages & Chains & Bots & AIBot & Analytics & KB & Settings & Integrations & Subscription
+    Modules --> AuthSvc & ApiSvc & WSSvc
+
+    style Chains fill:#FFF7ED,stroke:#F59E0B
+    style Bots fill:#F0FDF4,stroke:#22C55E
+    style AIBot fill:#EDE9FF,stroke:#6C47FF
+    style Messages fill:#FEF3C7,stroke:#D97706
+    </div>
+  </div>
+
+  <div class="diagram-wrapper" style="margin-top:32px">
+    <div class="diagram-title">C4 — Component Diagram: REST API (Level 3)</div>
+    <div class="mermaid">
+graph TB
+    subgraph API_Components["REST API Components — /api/v3/apps/{appId}/"]
+        Auth_C["🔐 Auth Controller<br/>/session · /login · /logout"]
+        Users_C["👥 Users Controller<br/>/users · /segments · /groups<br/>/import · /export"]
+        Conv_C["💬 Conversations Controller<br/>/conversations · /messages<br/>/tickets · /operators"]
+        Triggers_C["⚡ Triggers Controller<br/>/messages/auto<br/>/messages/manual"]
+        Chains_C["🔗 Chains Controller<br/>/trigger-chains<br/>/trigger-chains/editor"]
+        Bots_C["🤖 Bots Controller<br/>/chat-bot · /ai-agents<br/>/knowledge-base"]
+        Analytics_C["📊 Analytics Controller<br/>/funnels · /analytics<br/>/conversations/statistics"]
+        Settings_C["⚙️ Settings Controller<br/>/settings · /integrations<br/>/admins · /subscription"]
+        Events_C["🎯 Events Controller<br/>/events (user tracking)<br/>Custom events SDK"]
+    end
+
+    subgraph Domain["Domain Services"]
+        UserSvc["User Service<br/>Профили · Сегментация"]
+        MsgSvc["Messaging Service<br/>Отправка · Доставка"]
+        BotSvc["Bot Execution Service<br/>Сценарии · Состояния"]
+        AISvc["AI Service<br/>Embeddings · Retrieval<br/>LLM calls"]
+        AnalSvc["Analytics Service<br/>Агрегация · Воронки"]
+    end
+
+    API_Components --> Domain
+
+    style Auth_C fill:#1E293B,color:#fff
+    style Users_C fill:#6C47FF,color:#fff
+    style AISvc fill:#8B5CF6,color:#fff
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 6. DATA MODEL -->
+<section id="data-model">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">06 — Модель данных</span>
+    <h2>Ключевые сущности</h2>
+    <p class="section-desc">Основные доменные объекты и их ключевые атрибуты.</p>
+  </div>
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Entity Relationship (упрощённая схема)</div>
+    <div class="mermaid">
+erDiagram
+    APP {
+        int id
+        string name
+        string domain
+        string timezone
+        string plan
+    }
+    USER {
+        bigint id
+        string name
+        string email
+        string phone
+        string type
+        datetime created_at
+        datetime last_seen
+        json properties
+    }
+    SEGMENT {
+        int id
+        string name
+        json filters
+        int app_id
+    }
+    CONVERSATION {
+        bigint id
+        bigint user_id
+        int assigned_to
+        string status
+        string channel
+        datetime created_at
+        array tags
+    }
+    MESSAGE {
+        bigint id
+        bigint conversation_id
+        string author_type
+        string content_type
+        text body
+        datetime sent_at
+        boolean read
+    }
+    TICKET {
+        bigint id
+        bigint user_id
+        int assigned_to
+        string status
+        string priority
+        string category
+        datetime created_at
+    }
+    AUTO_MESSAGE {
+        bigint id
+        string name
+        string trigger_type
+        json conditions
+        json filters
+        json content
+        string status
+        string folder
+        datetime last_sent
+        json stats
+    }
+    CHAIN {
+        bigint id
+        string name
+        string trigger_type
+        json graph
+        string status
+        datetime created_at
+    }
+    CHATBOT {
+        bigint id
+        string name
+        string type
+        json flow_graph
+        string status
+        json stats
+    }
+    AI_BOT {
+        int id
+        string name
+        array sources
+        int questions_limit
+        int questions_used
+        json settings
+    }
+    EVENT {
+        bigint id
+        bigint user_id
+        string name
+        json properties
+        datetime occurred_at
+        string source
+    }
+    INTEGRATION {
+        int id
+        string type
+        string name
+        json config
+        boolean active
+    }
+
+    APP ||--o{ USER : "has"
+    APP ||--o{ SEGMENT : "has"
+    APP ||--o{ AUTO_MESSAGE : "has"
+    APP ||--o{ CHAIN : "has"
+    APP ||--o{ CHATBOT : "has"
+    APP ||--o{ AI_BOT : "has"
+    APP ||--o{ INTEGRATION : "has"
+    USER ||--o{ CONVERSATION : "has"
+    USER ||--o{ EVENT : "generates"
+    USER ||--o{ TICKET : "has"
+    CONVERSATION ||--o{ MESSAGE : "contains"
+    SEGMENT }o--o{ USER : "groups"
+    </div>
+  </div>
+  <div class="entity-grid">
+    <div class="entity-card">
+      <div class="entity-header">👤 User (Пользователь/Лид)</div>
+      <div class="entity-body">
+        <div class="field"><span class="field-name">id</span><span class="field-type">bigint PK</span></div>
+        <div class="field"><span class="field-name">name</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">email</span><span class="field-type">string indexed</span></div>
+        <div class="field"><span class="field-name">phone</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">type</span><span class="field-type">lead|client</span></div>
+        <div class="field"><span class="field-name">properties</span><span class="field-type">jsonb</span></div>
+        <div class="field"><span class="field-name">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field"><span class="field-name">last_seen</span><span class="field-type">timestamp</span></div>
+        <div class="field"><span class="field-name">channel_ids</span><span class="field-type">json (TG, VK, WA)</span></div>
+        <div class="field"><span class="field-name">tags</span><span class="field-type">string[]</span></div>
+      </div>
+    </div>
+    <div class="entity-card">
+      <div class="entity-header">💬 Conversation (Диалог)</div>
+      <div class="entity-body">
+        <div class="field"><span class="field-name">id</span><span class="field-type">bigint PK</span></div>
+        <div class="field"><span class="field-name">user_id</span><span class="field-type">bigint FK</span></div>
+        <div class="field"><span class="field-name">assigned_to</span><span class="field-type">int FK operator</span></div>
+        <div class="field"><span class="field-name">status</span><span class="field-type">open|closed|pending</span></div>
+        <div class="field"><span class="field-name">channel</span><span class="field-type">chat|tg|vk|wa|email</span></div>
+        <div class="field"><span class="field-name">tags</span><span class="field-type">string[]</span></div>
+        <div class="field"><span class="field-name">priority</span><span class="field-type">normal|high</span></div>
+        <div class="field"><span class="field-name">first_reply_at</span><span class="field-type">timestamp</span></div>
+        <div class="field"><span class="field-name">closed_at</span><span class="field-type">timestamp</span></div>
+      </div>
+    </div>
+    <div class="entity-card">
+      <div class="entity-header">⚡ AutoMessage (Триггер)</div>
+      <div class="entity-body">
+        <div class="field"><span class="field-name">id</span><span class="field-type">bigint PK</span></div>
+        <div class="field"><span class="field-name">name</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">trigger_type</span><span class="field-type">event|schedule</span></div>
+        <div class="field"><span class="field-name">event_name</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">conditions</span><span class="field-type">json filter tree</span></div>
+        <div class="field"><span class="field-name">content</span><span class="field-type">json (popup/email)</span></div>
+        <div class="field"><span class="field-name">popup_type</span><span class="field-type">small|large</span></div>
+        <div class="field"><span class="field-name">repeat_after</span><span class="field-type">int (days)</span></div>
+        <div class="field"><span class="field-name">status</span><span class="field-type">active|paused</span></div>
+        <div class="field"><span class="field-name">stats</span><span class="field-type">json</span></div>
+      </div>
+    </div>
+    <div class="entity-card">
+      <div class="entity-header">🔗 Chain (Цепочка)</div>
+      <div class="entity-body">
+        <div class="field"><span class="field-name">id</span><span class="field-type">bigint PK</span></div>
+        <div class="field"><span class="field-name">name</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">type</span><span class="field-type">event|schedule</span></div>
+        <div class="field"><span class="field-name">graph</span><span class="field-type">json (nodes+edges)</span></div>
+        <div class="field"><span class="field-name">trigger_conditions</span><span class="field-type">json</span></div>
+        <div class="field"><span class="field-name">status</span><span class="field-type">active|paused|draft</span></div>
+        <div class="field"><span class="field-name">template_id</span><span class="field-type">int nullable</span></div>
+        <div class="field"><span class="field-name">share_token</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">stats</span><span class="field-type">json</span></div>
+      </div>
+    </div>
+    <div class="entity-card">
+      <div class="entity-header">🤖 Chatbot</div>
+      <div class="entity-body">
+        <div class="field"><span class="field-name">id</span><span class="field-type">bigint PK</span></div>
+        <div class="field"><span class="field-name">name</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">type</span><span class="field-type">lead|service|tg</span></div>
+        <div class="field"><span class="field-name">flow_graph</span><span class="field-type">json (nodes+edges)</span></div>
+        <div class="field"><span class="field-name">start_conditions</span><span class="field-type">json</span></div>
+        <div class="field"><span class="field-name">status</span><span class="field-type">active|paused|draft</span></div>
+        <div class="field"><span class="field-name">channel</span><span class="field-type">site|telegram</span></div>
+        <div class="field"><span class="field-name">stats</span><span class="field-type">json</span></div>
+      </div>
+    </div>
+    <div class="entity-card">
+      <div class="entity-header">🧠 AIBot (AI-поддержка)</div>
+      <div class="entity-body">
+        <div class="field"><span class="field-name">id</span><span class="field-type">int PK</span></div>
+        <div class="field"><span class="field-name">name</span><span class="field-type">string</span></div>
+        <div class="field"><span class="field-name">sources</span><span class="field-type">array[Source]</span></div>
+        <div class="field"><span class="field-name">source_type</span><span class="field-type">url|knowledge_base</span></div>
+        <div class="field"><span class="field-name">status</span><span class="field-type">training|ready|deployed</span></div>
+        <div class="field"><span class="field-name">questions_limit</span><span class="field-type">int (plan)</span></div>
+        <div class="field"><span class="field-name">questions_used</span><span class="field-type">int</span></div>
+        <div class="field"><span class="field-name">settings</span><span class="field-type">json (tone, fallback)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 7. USER STORIES -->
+<section id="user-stories">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">07 — User Stories</span>
+    <h2>Детальные User Stories с критериями приёмки</h2>
+    <p class="section-desc">25 user stories, покрывающих все ключевые сценарии продукта.</p>
+  </div>
+  <div class="us-grid">
+
+    <!-- US-01 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-01</span>
+        <span class="us-title">Идентификация посетителя сайта</span>
+        <span class="us-epic epic-leads">База лидов</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу автоматически создавать профиль пользователя при первом посещении сайта, чтобы накапливать данные для персонализации.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>При загрузке сайта с Chat SDK создаётся анонимный профиль с уникальным ID</li>
+          <li>Все события пользователя (просмотры страниц, клики) записываются в его профиль</li>
+          <li>При вводе email/телефона анонимный профиль объединяется с идентифицированным</li>
+          <li>Карточка пользователя отображает: первый визит, последний визит, источник, все события</li>
+          <li>Данные доступны в разделе "База лидов" немедленно</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-02 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-02</span>
+        <span class="us-title">Сегментация пользователей по условиям</span>
+        <span class="us-epic epic-leads">База лидов</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу создавать динамические сегменты пользователей по любым свойствам и событиям, чтобы таргетировать рассылки и поп-апы.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Можно создать сегмент с условиями по любому свойству пользователя (строка, число, дата, булев)</li>
+          <li>Поддерживаются логические операторы: И / ИЛИ, вложенные группы условий</li>
+          <li>Можно фильтровать по событиям: совершил/не совершил, количество раз, за период</li>
+          <li>Сегмент пересчитывается в реальном времени; отображается количество пользователей</li>
+          <li>Сегмент можно использовать в триггерных сообщениях как фильтр "Кому отправлять"</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-03 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-03</span>
+        <span class="us-title">Импорт базы контактов</span>
+        <span class="us-epic epic-leads">База лидов</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как администратор, я хочу загрузить существующую базу контактов из CRM, чтобы начать работу с историческими данными.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Поддерживается импорт в форматах CSV и Excel (XLSX)</li>
+          <li>Мэппинг полей: произвольные колонки → свойства пользователя</li>
+          <li>При импорте дублирующиеся по email/телефону контакты объединяются</li>
+          <li>Можно добавить тег всем импортированным пользователям сразу</li>
+          <li>Отображается прогресс импорта и итоговый отчёт (добавлено/обновлено/ошибок)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-04 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-04</span>
+        <span class="us-title">Обработка входящего диалога оператором</span>
+        <span class="us-epic epic-dialogs">Диалоги</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как оператор поддержки, я хочу получать и обрабатывать входящие сообщения из всех каналов в едином интерфейсе, чтобы не переключаться между системами.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Все входящие сообщения (чат, Telegram, VK, WhatsApp, email) отображаются в едином inbox</li>
+          <li>Push-уведомление в браузере при новом сообщении (Web Push / звуковой сигнал)</li>
+          <li>Оператор видит профиль пользователя и историю событий рядом с диалогом</li>
+          <li>Можно использовать шаблоны ответов с переменными пользователя</li>
+          <li>Диалог можно назначить другому оператору или группе с комментарием</li>
+          <li>При закрытии диалога можно запросить оценку качества (опросник)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-05 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-05</span>
+        <span class="us-title">Работа с тикетами (обращениями)</span>
+        <span class="us-epic epic-dialogs">Диалоги</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как оператор, я хочу создавать тикеты из диалогов для отслеживания задач, требующих длительного решения.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Тикет создаётся из диалога одним кликом с автозаполнением данных пользователя</li>
+          <li>Тикет имеет статусы: Новый → В работе → Ожидает клиента → Решён → Закрыт</li>
+          <li>Поддерживаются приоритеты, категории, назначение на оператора/группу</li>
+          <li>История переписки по тикету сохраняется, можно добавлять внутренние заметки</li>
+          <li>Аналитика по тикетам: время решения, SLA, распределение по операторам</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-06 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-06</span>
+        <span class="us-title">Создание триггерного поп-апа по событию</span>
+        <span class="us-epic epic-trigger">Триггеры</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу создать поп-ап, который появляется при определённом событии (например, просмотр страницы ценообразования 3 раза), чтобы конвертировать заинтересованных пользователей.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Можно выбрать тип события: посещение сайта, открытие страницы, попытка уйти, кастомное событие</li>
+          <li>Можно задать фильтры аудитории: только пользователи с определёнными свойствами/событиями</li>
+          <li>Редактор содержания поддерживает блоки: текст, изображение, кнопка, поле ввода, видео</li>
+          <li>A/B тест: можно создать несколько вариантов сообщения для сплит-теста</li>
+          <li>Настройка повторной отправки: не чаще, чем раз в N дней</li>
+          <li>Статистика: отправлено, открыто, кликнуто, конверсий, отписок</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-07 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-07</span>
+        <span class="us-title">Рассылка по расписанию</span>
+        <span class="us-epic epic-trigger">Триггеры</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу отправить email-рассылку всем пользователям определённого сегмента в конкретное время.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Режим "По расписанию" позволяет задать дату и время отправки</li>
+          <li>Можно выбрать сегмент или задать произвольные фильтры аудитории</li>
+          <li>Поддерживаемые каналы: email, pop-up, push, сообщение в чат</li>
+          <li>Часовой пояс отправки учитывает настройки аккаунта</li>
+          <li>Предпросмотр письма перед отправкой с отправкой тестового письма</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-08 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-08</span>
+        <span class="us-title">Построение цепочки onboarding</span>
+        <span class="us-epic epic-chains">Цепочки</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу создать onboarding-цепочку для новых пользователей: приветственный email → поп-ап через 3 дня → Telegram-сообщение если не кликнул.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Цепочка создаётся в визуальном flow-builder с drag-and-drop узлами</li>
+          <li>Доступны блоки: Email, Pop-up, Сообщение в чат, Telegram, Push, Webhook, JavaScript</li>
+          <li>Логические блоки: Задержка (N дней/часов), Ожидание события, Фильтр аудитории, Сплит-тест</li>
+          <li>Завершающие блоки: Достижение цели, Выход из цепочки</li>
+          <li>Цепочку можно сохранить как шаблон и поделиться с коллегами по ссылке</li>
+          <li>Real-time статистика по каждому узлу цепочки</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-09 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-09</span>
+        <span class="us-title">Создание лид-бота для сбора заявок</span>
+        <span class="us-epic epic-bots">Чат-боты</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу создать чат-бот, который собирает имя и email посетителя и передаёт данные в CRM без участия оператора.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Бот строится в визуальном конструкторе с узлами: сообщение, ввод данных, условие, действие</li>
+          <li>Данные, введённые пользователем, сохраняются как свойства профиля</li>
+          <li>Бот может передавать данные в CRM через интеграцию (amoCRM, Битрикс24)</li>
+          <li>Можно задать условия запуска бота: событие, сегмент, страница</li>
+          <li>При завершении бота можно передать диалог живому оператору</li>
+          <li>Аналитика бота: запущено, завершено, конверсия по шагам</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-10 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-10</span>
+        <span class="us-title">Настройка AI-поддержки</span>
+        <span class="us-epic epic-ai">AI-бот</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как администратор, я хочу обучить AI-бота отвечать на типовые вопросы клиентов на основе наших статей базы знаний.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>AI-бот обучается на двух источниках: статьи базы знаний и URL веб-страниц</li>
+          <li>Система автоматически краулит указанный домен и собирает все страницы</li>
+          <li>Статус обработки каждого источника отображается: "Идёт обработка" / "Используется для ответов"</li>
+          <li>Можно протестировать AI-бота перед запуском через интерфейс тестирования</li>
+          <li>Лимит вопросов контролируется тарифным планом (текущий: 12/месяц)</li>
+          <li>AI-бот запускается в чате одной кнопкой "Запустить в чате"</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-11 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-11</span>
+        <span class="us-title">Анализ воронки конверсии</span>
+        <span class="us-epic epic-ai">Аналитика</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу построить воронку конверсии от первого посещения до покупки, чтобы найти этапы с наибольшим оттоком.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Воронка строится из последовательности событий пользователя</li>
+          <li>Можно добавить фильтры: сегмент, период, источник трафика</li>
+          <li>Отображается: количество пользователей на каждом шаге, % конверсии, время между шагами</li>
+          <li>Можно создать сегмент пользователей, "застрявших" на определённом шаге</li>
+          <li>Данные воронки экспортируются в CSV</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-12 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-12</span>
+        <span class="us-title">Установка скрипта на сайт</span>
+        <span class="us-epic epic-settings">Настройки</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как разработчик клиента, я хочу легко установить Carrot Quest на сайт и убедиться, что скрипт работает корректно.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Предоставляется готовый JS-код для вставки в &lt;head&gt; сайта</li>
+          <li>Есть инструкции для популярных CMS: 1С-Битрикс, WordPress, InSales, Tilda, uCoz, LPgenerator</li>
+          <li>Можно отправить инструкцию разработчику по email прямо из интерфейса</li>
+          <li>После установки скрипт автоматически начинает собирать события посетителей</li>
+          <li>Доступ к API ключам в разделе "Разработчикам"</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-13 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-13</span>
+        <span class="us-title">Подключение Telegram-канала</span>
+        <span class="us-epic epic-settings">Интеграции</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как администратор, я хочу подключить корпоративный Telegram-бот, чтобы все сообщения клиентов из Telegram попадали в общий inbox Carrot Quest.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Интеграция добавляется через вкладку "Интеграции" → "Telegram" без технических знаний</li>
+          <li>После подключения входящие сообщения из Telegram появляются в inbox как диалоги</li>
+          <li>Операторы могут отвечать из интерфейса CQ — ответы доставляются в Telegram</li>
+          <li>Поддерживается до 5 Telegram-ботов одновременно (согласно тарифу)</li>
+          <li>Статус интеграции отображается (подключена/ошибка) на странице интеграций</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-14 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-14</span>
+        <span class="us-title">Настройка Web Push уведомлений</span>
+        <span class="us-epic epic-settings">Настройки</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу настроить Web Push уведомления, чтобы возвращать пользователей на сайт даже когда они не открыты в браузере.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Задаётся домен для подписки (subdomain.pushgrow.io)</li>
+          <li>Кастомизируется страница подтверждения подписки: заголовок, текст, изображение</li>
+          <li>Настраивается дефолтное изображение уведомления (192x192px)</li>
+          <li>Ссылка при клике на уведомление задаётся глобально с возможностью переопределения</li>
+          <li>Push можно отправлять как триггерное сообщение или в цепочке</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-15 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-15</span>
+        <span class="us-title">Управление командой операторов</span>
+        <span class="us-epic epic-settings">Настройки</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как администратор, я хочу добавлять операторов, назначать роли и распределять нагрузку между группами поддержки.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Приглашение по email: оператор получает письмо со ссылкой для регистрации</li>
+          <li>Роли: Администратор (полный доступ) / Оператор (только диалоги) / Маркетолог</li>
+          <li>Группы операторов для автоматического назначения диалогов</li>
+          <li>Модуль "Оптимизируй поддержку": аналитика по тегам, каналам, операторам; автораспределение</li>
+          <li>Можно задать рабочие часы для каждого оператора</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-16 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-16</span>
+        <span class="us-title">Интеграция с amoCRM</span>
+        <span class="us-epic epic-settings">Интеграции</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как руководитель отдела продаж, я хочу синхронизировать Carrot Quest с amoCRM, чтобы лиды из чата автоматически попадали в воронку продаж.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Двусторонняя синхронизация: контакты и сделки CQ ↔ amoCRM</li>
+          <li>При создании диалога в CQ — создаётся сделка в amoCRM с данными лида</li>
+          <li>Статусы сделки в amoCRM отображаются в карточке пользователя CQ</li>
+          <li>Настройка маппинга полей: свойства CQ → поля amoCRM</li>
+          <li>Поддерживается до 2 параллельных интеграций (согласно статистике)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-17 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-17</span>
+        <span class="us-title">Настройка GDPR / согласий</span>
+        <span class="us-epic epic-settings">Настройки</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как администратор, я хочу настроить получение согласий пользователей на обработку персональных данных согласно GDPR/152-ФЗ.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Настраивается ссылка на политику конфиденциальности (единая для всех форм)</li>
+          <li>Cookie-бампер: оповещение об использовании Cookie с кнопкой согласия</li>
+          <li>Согласие на обработку ПД в чате: запрашивается при первом сообщении</li>
+          <li>Два варианта отображения: с чекбоксом / только текст</li>
+          <li>Согласие пользователя фиксируется как событие в его профиле с датой и IP</li>
+          <li>Согласие на использование email и телефона для маркетинга — отдельная настройка</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-18 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-18</span>
+        <span class="us-title">Просмотр аналитики диалогов</span>
+        <span class="us-epic epic-dialogs">Диалоги</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как руководитель поддержки, я хочу видеть отчёты по эффективности работы команды: время ответа, количество диалогов, оценки клиентов.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Дашборд с KPI: среднее время первого ответа, среднее время решения, кол-во открытых/закрытых</li>
+          <li>Разбивка по операторам, каналам, тегам, периодам</li>
+          <li>Оценки качества от клиентов (CSAT): средний балл, динамика</li>
+          <li>Аналитика обращений (тикетов): SLA соблюдение, распределение по категориям</li>
+          <li>Экспорт данных в CSV</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-19 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-19</span>
+        <span class="us-title">Telegram-бот для маркетинга</span>
+        <span class="us-epic epic-bots">Чат-боты</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу создать Telegram-бота для ведения рассылок и сбора заявок в Telegram-канале.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Telegram-бот создаётся в конструкторе цепочек (блок "Чат-бот в Telegram")</li>
+          <li>Бот может отправлять рассылки подписчикам Telegram-канала/группы</li>
+          <li>Блок "Проверка подписки на канал/группу" в цепочке для условной логики</li>
+          <li>Статистика рассылок: отправлено сообщений, открытия, клики</li>
+          <li>Модуль "Боты и рассылки в Telegram" — отдельный платный модуль (1000 ₽/мес)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-20 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-20</span>
+        <span class="us-title">Шаблоны триггерных сообщений</span>
+        <span class="us-epic epic-trigger">Триггеры</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу использовать готовые шаблоны триггерных сообщений, чтобы быстро запустить типовые кампании.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Раздел "Рекомендованные шаблоны" с готовыми сценариями по категориям</li>
+          <li>Раздел "Ваши шаблоны" — сохранённые собственные шаблоны</li>
+          <li>При выборе шаблона открывается готовое сообщение с предзаполненными условиями</li>
+          <li>Шаблон можно редактировать перед использованием</li>
+          <li>Любое созданное сообщение можно сохранить как шаблон кнопкой "Сохранить как шаблон"</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-21 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-21</span>
+        <span class="us-title">Управление подпиской и модулями</span>
+        <span class="us-epic epic-settings">Подписка</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как администратор, я хочу управлять тарифным планом и подключать дополнительные модули в зависимости от потребностей бизнеса.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Страница подписки показывает текущий план, стоимость, срок действия, использованные лимиты</li>
+          <li>Пакетные модули (AI-Бот v2, Telegram-боты) подключаются отдельно</li>
+          <li>Отображаются лимиты: уникальные посетители и отправленные письма с прогресс-баром</li>
+          <li>Платёжные данные (карта, email для документов, реквизиты) редактируются</li>
+          <li>Доступен раздел FAQ: как продлить, как отменить, лицензионный договор, гарантии</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-22 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-22</span>
+        <span class="us-title">Сбор лидов из VK-формы</span>
+        <span class="us-epic epic-leads">База лидов</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу получать лиды из рекламных форм ВКонтакте автоматически в Carrot Quest без ручного переноса.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Интеграция "Форма сбора заявок ВКонтакте" подключается через раздел Интеграций</li>
+          <li>При заполнении VK-формы данные автоматически создают профиль пользователя в CQ</li>
+          <li>Поддерживается до 5 параллельных VK-интеграций</li>
+          <li>Лид получает тег "vk_lead" или кастомный тег, заданный в настройках интеграции</li>
+          <li>Новый лид автоматически попадает в триггерные сценарии (если настроены)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-23 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-23</span>
+        <span class="us-title">A/B тестирование поп-апов</span>
+        <span class="us-epic epic-trigger">Триггеры</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как маркетолог, я хочу протестировать два варианта поп-апа, чтобы определить, какой конвертирует лучше.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>В редакторе триггерного сообщения доступна кнопка "Добавить А/Б тест"</li>
+          <li>Можно создать 2+ варианта с разным содержанием при одинаковых условиях отправки</li>
+          <li>Настраивается распределение трафика между вариантами (например, 50/50)</li>
+          <li>Статистика показывается раздельно по каждому варианту: CTR, конверсия, открываемость</li>
+          <li>После завершения теста можно оставить победивший вариант одним кликом</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-24 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-24</span>
+        <span class="us-title">Экспорт базы пользователей</span>
+        <span class="us-epic epic-leads">База лидов</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как администратор, я хочу экспортировать базу пользователей с историей событий для передачи в BI-систему.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Экспорт доступен с применением фильтров (сегмент, период, тег)</li>
+          <li>Форматы: CSV с выбором колонок (свойства + события)</li>
+          <li>Большие выгрузки отправляются на email когда файл готов</li>
+          <li>История событий (до N последних) включается в выгрузку опционально</li>
+          <li>Экспорт соответствует требованиям GDPR (только данные с согласием)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- US-25 -->
+    <div class="us-card">
+      <div class="us-header">
+        <span class="us-id">US-25</span>
+        <span class="us-title">Кастомизация чата на сайте</span>
+        <span class="us-epic epic-settings">Настройки</span>
+      </div>
+      <div class="us-body">
+        <div class="us-story">Как дизайнер/маркетолог, я хочу настроить внешний вид чата: цвет, приветствие, позицию кнопки, чтобы чат органично вписывался в стиль сайта.</div>
+        <div class="us-ac-title">Критерии приёмки</div>
+        <ul class="us-ac-list">
+          <li>Настройки → Чат → "Основные настройки": цвет, фон, приветственное сообщение</li>
+          <li>"Кнопка чата": выбор стиля (всплывающий пузырь / строка) и позиции (лево/право)</li>
+          <li>"Ожидание ответа": текст об ожидаемом времени ответа операторов</li>
+          <li>"Завершение диалогов": дублирование на email, запрос оценки</li>
+          <li>"Звуковые уведомления": настройка звука для клиента при новом сообщении</li>
+          <li>Предпросмотр изменений без сохранения</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- 8. USE CASES -->
+<section id="use-cases">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">08 — Use Cases</span>
+    <h2>Диаграммы вариантов использования</h2>
+    <p class="section-desc">Основные акторы и их варианты использования системы.</p>
+  </div>
+
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Use Case Diagram — Акторы и сценарии</div>
+    <div class="mermaid">
+graph LR
+    subgraph Actors["Акторы"]
+        Visitor["🌐 Посетитель<br/>сайта"]
+        Lead["👤 Лид"]
+        Operator["🎧 Оператор"]
+        Marketer["📣 Маркетолог"]
+        Admin["👑 Администратор"]
+    end
+
+    subgraph UC_Visitor["Посетитель/Лид"]
+        UC1["Открыть чат виджет"]
+        UC2["Отправить сообщение"]
+        UC3["Ответить на поп-ап"]
+        UC4["Взаимодействовать с ботом"]
+        UC5["Задать вопрос AI-боту"]
+        UC6["Подписаться на Web Push"]
+        UC7["Заполнить форму в боте"]
+    end
+
+    subgraph UC_Operator["Оператор"]
+        UC10["Принять диалог"]
+        UC11["Ответить на сообщение"]
+        UC12["Создать тикет"]
+        UC13["Назначить диалог"]
+        UC14["Использовать шаблон"]
+        UC15["Просмотреть профиль лида"]
+        UC16["Закрыть диалог с оценкой"]
+    end
+
+    subgraph UC_Marketer["Маркетолог"]
+        UC20["Создать триггерное сообщение"]
+        UC21["Запустить цепочку"]
+        UC22["Создать чат-бота"]
+        UC23["Настроить AI-бота"]
+        UC24["Сегментировать аудиторию"]
+        UC25["Просмотреть аналитику"]
+        UC26["Запустить рассылку"]
+    end
+
+    subgraph UC_Admin["Администратор"]
+        UC30["Управлять командой"]
+        UC31["Настроить интеграции"]
+        UC32["Установить скрипт"]
+        UC33["Управлять подпиской"]
+        UC34["Настроить GDPR"]
+        UC35["Управлять настройками чата"]
+    end
+
+    Visitor --> UC1 & UC2 & UC3 & UC4 & UC6
+    Lead --> UC1 & UC2 & UC3 & UC4 & UC5 & UC7
+    Operator --> UC10 & UC11 & UC12 & UC13 & UC14 & UC15 & UC16
+    Marketer --> UC20 & UC21 & UC22 & UC23 & UC24 & UC25 & UC26
+    Admin --> UC30 & UC31 & UC32 & UC33 & UC34 & UC35
+    Admin --> Marketer
+    Admin --> Operator
+
+    style Visitor fill:#F0FDF4,stroke:#22C55E
+    style Lead fill:#EDE9FF,stroke:#6C47FF
+    style Operator fill:#FFF7ED,stroke:#F59E0B
+    style Marketer fill:#EFF6FF,stroke:#3B82F6
+    style Admin fill:#FEF2F2,stroke:#EF4444
+    </div>
+  </div>
+
+  <h3>Сводная таблица Use Cases</h3>
+  <table class="uc-table">
+    <thead>
+      <tr><th>ID</th><th>Актор</th><th>Use Case</th><th>Предусловие</th><th>Основной поток</th><th>Приоритет</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>UC-01</td><td class="actor">Посетитель</td><td>Открыть чат</td><td>Chat SDK установлен на сайте</td><td>Клик по кнопке чата → виджет открывается → можно ввести сообщение</td><td class="priority-high">HIGH</td></tr>
+      <tr><td>UC-02</td><td class="actor">Лид</td><td>Взаимодействие с ботом</td><td>Чат-бот запущен и активен</td><td>Бот инициирует диалог → пользователь отвечает → бот обрабатывает → сохраняет данные в профиле</td><td class="priority-high">HIGH</td></tr>
+      <tr><td>UC-03</td><td class="actor">Оператор</td><td>Обработка входящего диалога</td><td>Оператор авторизован, диалог назначен</td><td>Уведомление → открыть inbox → просмотреть профиль → ответить → закрыть/назначить</td><td class="priority-high">HIGH</td></tr>
+      <tr><td>UC-04</td><td class="actor">Маркетолог</td><td>Создание триггерной кампании</td><td>Маркетолог авторизован, аудитория сегментирована</td><td>Создать сообщение → выбрать тип (поп-ап/email) → редактировать контент → задать условия → сохранить → активировать</td><td class="priority-high">HIGH</td></tr>
+      <tr><td>UC-05</td><td class="actor">Маркетолог</td><td>Построение цепочки сообщений</td><td>Маркетолог авторизован</td><td>Открыть builder → выбрать шаблон или создать с нуля → добавить блоки → соединить стрелками → настроить каждый блок → сохранить → запустить</td><td class="priority-high">HIGH</td></tr>
+      <tr><td>UC-06</td><td class="actor">Маркетолог</td><td>Обучение AI-бота</td><td>Есть база знаний или веб-сайт</td><td>Открыть AI-бот → добавить источники (URL/статьи) → дождаться обработки → протестировать → запустить</td><td class="priority-med">MED</td></tr>
+      <tr><td>UC-07</td><td class="actor">Маркетолог</td><td>Анализ воронки</td><td>События настроены и собираются</td><td>Открыть Воронки → выбрать события → задать период и фильтры → просмотреть данные → экспортировать</td><td class="priority-med">MED</td></tr>
+      <tr><td>UC-08</td><td class="actor">Администратор</td><td>Подключение интеграции</td><td>Есть доступ к внешней системе</td><td>Открыть Интеграции → выбрать → авторизоваться в внешней системе (OAuth) → настроить маппинг → сохранить → проверить статус</td><td class="priority-med">MED</td></tr>
+      <tr><td>UC-09</td><td class="actor">Администратор</td><td>Управление командой</td><td>Есть администраторские права</td><td>Открыть Управление командой → Пригласить → ввести email → выбрать роль → отправить инвайт → оператор активирует аккаунт</td><td class="priority-med">MED</td></tr>
+      <tr><td>UC-10</td><td class="actor">Администратор</td><td>Продление подписки</td><td>Подписка истекает</td><td>Получить уведомление → открыть Подписку → выбрать тариф → ввести данные карты → подтвердить оплату</td><td class="priority-high">HIGH</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- 9. INTEGRATIONS -->
+<section id="integrations">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">09 — Интеграции</span>
+    <h2>Карта интеграций (30+)</h2>
+    <p class="section-desc">Все доступные интеграции по категориям. 🟢 — подключено в тестовом аккаунте.</p>
+  </div>
+
+  <div class="int-section">
+    <div class="int-section-title">📱 Коммуникации (13)</div>
+    <div class="int-tags">
+      <span class="int-tag available">📧 Почта</span>
+      <span class="int-tag active">💙 Facebook Messenger ×6</span>
+      <span class="int-tag active">📸 Instagram ×3</span>
+      <span class="int-tag active">🔵 ВКонтакте ×2</span>
+      <span class="int-tag active">💚 WhatsApp (edna) ×6</span>
+      <span class="int-tag active">✈️ Telegram ×5</span>
+      <span class="int-tag active">📱 MAX ×1</span>
+      <span class="int-tag available">💜 Viber</span>
+      <span class="int-tag available">💬 Slack</span>
+      <span class="int-tag available">🎫 Zendesk</span>
+      <span class="int-tag available">🎫 Omnidesk</span>
+      <span class="int-tag available">🎫 Usedesk</span>
+      <span class="int-tag active">📅 Calendly ×1</span>
+    </div>
+  </div>
+
+  <div class="int-section">
+    <div class="int-section-title">🛒 CMS (6)</div>
+    <div class="int-tags">
+      <span class="int-tag available">🔴 1С-Битрикс</span>
+      <span class="int-tag available">🛍️ Ecwid</span>
+      <span class="int-tag premium">InSales</span>
+      <span class="int-tag premium">OpenCart</span>
+      <span class="int-tag premium">Prestashop</span>
+      <span class="int-tag available">🔵 WordPress</span>
+    </div>
+  </div>
+
+  <div class="int-section">
+    <div class="int-section-title">🏢 CRM (4)</div>
+    <div class="int-tags">
+      <span class="int-tag active">amoCRM ×2</span>
+      <span class="int-tag active">Битрикс24 ×7</span>
+      <span class="int-tag active">RetailCRM ×1</span>
+      <span class="int-tag available">📨 Email-оповещения о лидах</span>
+    </div>
+  </div>
+
+  <div class="int-section">
+    <div class="int-section-title">📊 Аналитика (3)</div>
+    <div class="int-tags">
+      <span class="int-tag available">Mixpanel</span>
+      <span class="int-tag available">Roistat</span>
+      <span class="int-tag available">Яндекс.Метрика</span>
+    </div>
+  </div>
+
+  <div class="int-section">
+    <div class="int-section-title">📞 Коллтрекинг (1)</div>
+    <div class="int-tags">
+      <span class="int-tag available">Alloka</span>
+    </div>
+  </div>
+
+  <div class="int-section">
+    <div class="int-section-title">🔧 Другие / AI (7)</div>
+    <div class="int-tags">
+      <span class="int-tag available">Segment</span>
+      <span class="int-tag premium">Facebook Leads</span>
+      <span class="int-tag available">myTarget/Одноклассники</span>
+      <span class="int-tag available">Sendsay</span>
+      <span class="int-tag active">Форма ВКонтакте ×5</span>
+      <span class="int-tag active">Dialogflow ×1</span>
+      <span class="int-tag active">AWS Lambda ×1</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 10. SUBSCRIPTION -->
+<section id="subscription">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">10 — Монетизация</span>
+    <h2>Подписка и тарифные планы</h2>
+    <p class="section-desc">Текущий тарифный план тестового аккаунта и структура монетизации.</p>
+  </div>
+  <div class="plan-card">
+    <div class="plan-stat"><div class="plan-stat-label">Тариф</div><div class="plan-stat-value">Маркетинг 1000</div><div class="plan-stat-sub">Годовой план</div></div>
+    <div class="plan-stat"><div class="plan-stat-label">Стоимость</div><div class="plan-stat-value">388 584 ₽</div><div class="plan-stat-sub">в год / ~32 382 ₽/мес</div></div>
+    <div class="plan-stat"><div class="plan-stat-label">Уникальные посетители</div><div class="plan-stat-value">32 / 12 000</div><div class="plan-stat-sub">0.27% использовано</div></div>
+    <div class="plan-stat"><div class="plan-stat-label">Отправлено писем</div><div class="plan-stat-value">72 / 6 000</div><div class="plan-stat-sub">1.2% использовано</div></div>
+    <div class="plan-stat"><div class="plan-stat-label">Активна до</div><div class="plan-stat-value">21.10.2026</div><div class="plan-stat-sub">~5 месяцев</div></div>
+    <div class="plan-stat"><div class="plan-stat-label">Платёжная система</div><div class="plan-stat-value">Stripe</div><div class="plan-stat-sub">Карта **** 4242</div></div>
+  </div>
+
+  <h3>Подключённые дополнительные модули</h3>
+  <table class="data-table">
+    <thead><tr><th>Модуль</th><th>Описание</th><th>Стоимость</th><th>Использование</th></tr></thead>
+    <tbody>
+      <tr><td>AI-Бот v2</td><td>AI-поддержка на базе LLM, обучается на базе знаний и сайтах</td><td>12 000 ₽/мес</td><td>0 из 12 вопросов</td></tr>
+      <tr><td>100 активных триггерных сценариев</td><td>Запуск до 100 триггерных сообщений одновременно</td><td>990 ₽/мес</td><td>~3 активных</td></tr>
+      <tr><td>40 активных лид-ботов</td><td>Запуск до 40 лид-ботов одновременно</td><td>990 ₽/мес</td><td>Данные недоступны</td></tr>
+      <tr><td>tg-bot-marketing</td><td>Telegram-боты для маркетинга</td><td>1 000 ₽/мес</td><td>0 сообщений</td></tr>
+      <tr><td>Боты и рассылки в Telegram</td><td>Рассылки через Telegram-боты</td><td>1 000 ₽/мес</td><td>0 сообщений</td></tr>
+      <tr><td>Оптимизируй поддержку</td><td>Аналитика по тегам/каналам/операторам, группы, автораспределение</td><td>490 ₽/мес</td><td>Активен</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- 11. BOTTLENECKS -->
+<section id="bottlenecks">
+<div class="container">
+  <div class="section-header">
+    <span class="section-label">11 — Оценка</span>
+    <h2>Узкие места и точки роста</h2>
+    <p class="section-desc">Выявленные проблемы продукта и стратегические возможности для развития.</p>
+  </div>
+
+  <h3>🔴 Критические узкие места</h3>
+
+  <div class="issue-card critical">
+    <span class="severity critical">Критично</span>
+    <h4>Технический долг: гибридный frontend</h4>
+    <p>Сосуществование AngularJS (legacy), Angular, Vue.js и jQuery создаёт значительный технический долг. UI-Router AngularJS ограничивает навигацию (вкладки без href), замедляет разработку и затрудняет онбординг новых разработчиков. Размер бандла увеличен, производительность снижена.</p>
+  </div>
+
+  <div class="issue-card critical">
+    <span class="severity critical">Критично</span>
+    <h4>Медленная загрузка SPA (5-8 сек)</h4>
+    <p>Начальная загрузка приложения занимает 5-8 секунд (спиннер на весь экран). Критически влияет на NPS и первое впечатление от продукта. Требует code splitting, lazy loading модулей и оптимизации критического пути рендеринга.</p>
+  </div>
+
+  <div class="issue-card critical">
+    <span class="severity critical">Критично</span>
+    <h4>AI-бот: лимит 12 вопросов/месяц (плановый)</h4>
+    <p>При стоимости 12 000 ₽/мес лимит в 12 вопросов — неоправданно мал для реального использования (833 ₽ за вопрос). Это снижает ROI модуля и тормозит его adoption. Необходима переработка тарификации AI-бота.</p>
+  </div>
+
+  <h3>🟡 Средние проблемы</h3>
+
+  <div class="issue-card medium">
+    <span class="severity medium">Средне</span>
+    <h4>Цепочки сообщений: нет примеров/демо</h4>
+    <p>У новых пользователей нет готовых цепочек. Шаблоны существуют, но они пустые (test, new) или неинформативные. Нужна библиотека готовых сценариев: onboarding, re-engagement, cart abandonment.</p>
+  </div>
+
+  <div class="issue-card medium">
+    <span class="severity medium">Средне</span>
+    <h4>WhatsApp и Viber: базовая поддержка</h4>
+    <p>WhatsApp доступен только через партнёра edna (не официальный WhatsApp Business API). Viber не имеет подключённых интеграций. Рост мессенджер-маркетинга требует нативных интеграций.</p>
+  </div>
+
+  <div class="issue-card medium">
+    <span class="severity medium">Средне</span>
+    <h4>Слабый мобильный интерфейс для операторов</h4>
+    <p>Основной интерфейс не оптимизирован для мобильных устройств. Операторы не могут эффективно обрабатывать диалоги с телефона — нужно нативное мобильное приложение или PWA.</p>
+  </div>
+
+  <div class="issue-card medium">
+    <span class="severity medium">Средне</span>
+    <h4>Аналитика: ограниченная детализация</h4>
+    <p>Нет cohort-анализа, attribution-модели, карты пути пользователя (customer journey). Аналитика диалогов не показывает team performance в режиме реального времени.</p>
+  </div>
+
+  <h3>🟢 Точки роста</h3>
+
+  <div class="issue-card growth">
+    <span class="severity growth">Рост</span>
+    <h4>AI-агенты второго поколения</h4>
+    <p>Текущий AI-бот отвечает на вопросы по базе знаний. Следующий шаг — AI-агенты, способные выполнять действия: создавать тикеты, обновлять данные CRM, совершать API-запросы. Позиционирование как "AI-first support platform".</p>
+  </div>
+
+  <div class="issue-card growth">
+    <span class="severity growth">Рост</span>
+    <h4>Marketplace шаблонов цепочек</h4>
+    <p>Создание открытого маркетплейса готовых цепочек от Carrot Quest и партнёров: onboarding по отраслям, воронки e-commerce, сценарии SaaS. Монетизация через платные шаблоны и партнёрские продажи.</p>
+  </div>
+
+  <div class="issue-card growth">
+    <span class="severity growth">Рост</span>
+    <h4>Customer Data Platform (CDP)</h4>
+    <p>База лидов уже содержит богатые данные о пользователях. Развитие в сторону полноценной CDP с предиктивной аналитикой, скорингом лидов, customer lifetime value. Конкуренция с Segment, mParticle.</p>
+  </div>
+
+  <div class="issue-card growth">
+    <span class="severity growth">Рост</span>
+    <h4>Telegram-экосистема</h4>
+    <p>Telegram Mini Apps, платежи в Telegram, Telegram Stars — новые возможности для маркетинга. CQ уже поддерживает Telegram-боты; развитие native интеграции с TON-экономикой откроет новые сегменты.</p>
+  </div>
+
+  <div class="issue-card growth">
+    <span class="severity growth">Рост</span>
+    <h4>No-code автоматизация (Zapier-killer)</h4>
+    <p>Webhook и JavaScript-блоки в цепочках — основа для no-code интеграций. Развитие визуального редактора условий и действий позволит пользователям строить сложные автоматизации без программирования.</p>
+  </div>
+
+  <div class="issue-card growth">
+    <span class="severity growth">Рост</span>
+    <h4>Вертикальные решения (vertical SaaS)</h4>
+    <p>Текущий продукт — горизонтальная платформа. Создание готовых решений по отраслям: CarrotQuest for E-commerce, for B2B SaaS, for EdTech с предустановленными сценариями, интеграциями и дашбордами.</p>
+  </div>
+
+</div>
+</section>
+
+<!-- FOOTER -->
+<div style="background: var(--gray-800); color: #94A3B8; padding: 40px; text-align: center; font-size: 13px;">
+  <p><strong style="color:white">Carrot Quest Deep Product Analysis</strong> · Исследовано: все разделы и сущности продукта</p>
+  <p style="margin-top: 8px;">База лидов · Диалоги · Триггерные сообщения · Цепочки · Чат-боты · AI-бот · Настройки · Интеграции · Подписка</p>
+  <p style="margin-top: 8px; color: #64748B;">Дата анализа: Май 2026 · Тестовая среда: gamma.k8s-dev.carrotquest.io</p>
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'default',
+  themeVariables: {
+    primaryColor: '#6C47FF',
+    primaryTextColor: '#fff',
+    primaryBorderColor: '#4A2FD9',
+    lineColor: '#94A3B8',
+    secondaryColor: '#EDE9FF',
+    tertiaryColor: '#F8FAFC'
+  },
+  flowchart: { curve: 'basis', htmlLabels: true },
+  er: { diagramPadding: 20 }
+});
+</script>
+</body>
+</html>
