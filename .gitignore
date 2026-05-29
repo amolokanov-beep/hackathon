@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Environment variables (содержит API ключи — используй .env.example как шаблон)
+.env
+
+# macOS artifacts
+.DS_Store
+__MACOSX/
+
+# Сгенерированные/спарсенные данные (пересоздаются: node scripts/extract_all.js && node scripts/build_kb.js)
+scripts/articles_content.json
+scripts/kb_structured.json
+knowledge/cq_help_kb.md
+knowledge/cq_entities_summary.md
+
+# Резервные копии и временные файлы
+index.original.html
+
+# Внутренняя аналитика (не для публичного репо)
+www.carrotquest.io*.pdf
+
+# Standalone-экспорт (build artifact)
+Carrot quest Onboarding _standalone_.html
+
+# Логи
+*.log
+npm-debug.log*

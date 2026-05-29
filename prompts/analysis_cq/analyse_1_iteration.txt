@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrot Quest — Верхнеуровневый анализ приложения</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  :root {
+    --orange: #FF6B35;
+    --green: #4CAF50;
+    --blue: #2196F3;
+    --purple: #9C27B0;
+    --red: #F44336;
+    --yellow: #FF9800;
+    --gray: #607D8B;
+    --light: #F5F7FA;
+    --border: #E0E6EE;
+    --text: #1A2332;
+    --subtext: #5A6A7A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #F0F4F8;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .hero {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF9800 50%, #f44336 100%);
+    color: white;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: 80px; bottom: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .hero p { font-size: 16px; opacity: 0.9; max-width: 600px; }
+  .hero .meta { margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap; }
+  .hero .meta span {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .num {
+    background: var(--orange);
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  /* KPI Cards */
+  .kpi { text-align: center; padding: 20px 16px; }
+  .kpi .val { font-size: 36px; font-weight: 800; color: var(--orange); }
+  .kpi .lbl { font-size: 13px; color: var(--subtext); margin-top: 4px; }
+  .kpi .sub { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+  /* Module cards */
+  .module {
+    border-radius: 12px;
+    padding: 18px;
+    border-left: 4px solid;
+    background: var(--light);
+  }
+  .module h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .module p { font-size: 13px; color: var(--subtext); line-height: 1.5; }
+  .module .url { font-size: 11px; color: var(--gray); margin-top: 6px; font-family: monospace; }
+
+  /* Tech stack */
+  .tech-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 4px;
+  }
+  .tech-badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* User stories */
+  .story {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .story::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .story.blue::before { background: var(--blue); }
+  .story.green::before { background: var(--green); }
+  .story.orange::before { background: var(--orange); }
+  .story.purple::before { background: var(--purple); }
+  .story.yellow::before { background: var(--yellow); }
+  .story h5 { font-size: 13px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .story p { font-size: 14px; line-height: 1.6; }
+  .story .ac { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 12px; color: var(--subtext); }
+
+  /* Bottlenecks */
+  .bottleneck {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 1px solid;
+  }
+  .bottleneck.high { background: #FFF3F3; border-color: #FFCDD2; }
+  .bottleneck.med { background: #FFFDE7; border-color: #FFF9C4; }
+  .bottleneck.low { background: #E8F5E9; border-color: #C8E6C9; }
+  .bottleneck .icon { font-size: 24px; flex-shrink: 0; }
+  .bottleneck h5 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .bottleneck p { font-size: 13px; color: var(--subtext); line-height: 1.5; }
+  .severity {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .high .severity { background: #FFCDD2; color: #C62828; }
+  .med .severity { background: #FFF9C4; color: #F57F17; }
+  .low .severity { background: #C8E6C9; color: #2E7D32; }
+
+  /* Growth */
+  .growth {
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    display: flex; gap: 14px;
+  }
+  .growth .icon { font-size: 22px; flex-shrink: 0; }
+  .growth h5 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .growth p { font-size: 13px; color: var(--subtext); line-height: 1.5; }
+  .growth .impact {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    background: #E3F2FD;
+    color: #1565C0;
+  }
+
+  /* Mermaid */
+  .mermaid-wrap {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .mermaid { max-width: 100%; }
+
+  /* Integration chips */
+  .int-group { margin-bottom: 16px; }
+  .int-group h5 { font-size: 12px; text-transform: uppercase; font-weight: 700; color: var(--subtext); margin-bottom: 8px; letter-spacing: 0.5px; }
+  .int-chip {
+    display: inline-flex; align-items: center;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    margin: 3px;
+  }
+  .int-chip.active { background: #E8F5E9; border-color: #A5D6A7; }
+
+  /* Arch diagram */
+  .arch-row { display: flex; align-items: center; gap: 0; margin-bottom: 12px; flex-wrap: wrap; }
+  .arch-box {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 90px;
+  }
+  .arch-arrow { font-size: 18px; color: var(--subtext); padding: 0 8px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero { padding: 32px 20px; }
+    .hero h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🥕 Carrot Quest — Анализ приложения</h1>
+  <p>Верхнеуровневый анализ платформы маркетинговой автоматизации и коммуникаций с клиентами</p>
+  <div class="meta">
+    <span>📅 Дата анализа: 28 мая 2026</span>
+    <span>🔗 gamma.k8s-dev.carrotquest.io</span>
+    <span>🏢 B2B SaaS</span>
+    <span>📦 Создан: август 2018</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- KPIs -->
+  <div class="section">
+    <div class="section-title"><span class="num">0</span> Ключевые метрики аккаунта</div>
+    <div class="grid-4">
+      <div class="card kpi">
+        <div class="val">3 607</div>
+        <div class="lbl">Лидов в базе</div>
+        <div class="sub">Активные + анонимные</div>
+      </div>
+      <div class="card kpi">
+        <div class="val">739</div>
+        <div class="lbl">Открытых диалогов</div>
+        <div class="sub">В очереди на обработку</div>
+      </div>
+      <div class="card kpi">
+        <div class="val">36.6%</div>
+        <div class="lbl">Завершений Welcome-бота</div>
+        <div class="sub">377 начали, 53 контакта</div>
+      </div>
+      <div class="card kpi">
+        <div class="val">20+</div>
+        <div class="lbl">Интеграций доступно</div>
+        <div class="sub">Коммуникации, CRM, CMS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> Архитектура приложения</div>
+    <div class="mermaid-wrap">
+      <div class="mermaid">
+graph TD
+    A["👤 Посетитель сайта клиента"] --> B["📦 Carrot Quest Widget\n(api.min.js SDK)"]
+    B --> C["🌐 API Gateway\napi.gamma.k8s-dev.carrotquest.io"]
+    C --> D["📊 REST API v3\n/api/v3/apps/{id}/..."]
+
+    E["🖥️ Операторы / Маркетологи"] --> F["🎛️ Panel SPA\n/panel/{app_id}/"]
+    F --> C
+
+    D --> G["🗄️ Backend Services"]
+    G --> H["👥 Leads & CRM"]
+    G --> I["💬 Conversations"]
+    G --> J["🤖 Bot Engine"]
+    G --> K["📧 Message Delivery"]
+    G --> L["🧠 AI Bot\n(Knowledge Base)"]
+
+    K --> M["📱 Telegram / MAX / Viber"]
+    K --> N["📘 Facebook / Instagram / VK"]
+    K --> O["📬 Email / WhatsApp"]
+
+    J --> P["Лид-боты\nWelcome-боты"]
+    J --> Q["Цепочки сообщений\n(Trigger Chains)"]
+
+    style A fill:#FF9800,color:#fff
+    style B fill:#FF6B35,color:#fff
+    style C fill:#2196F3,color:#fff
+    style D fill:#2196F3,color:#fff
+    style E fill:#9C27B0,color:#fff
+    style F fill:#9C27B0,color:#fff
+    style G fill:#607D8B,color:#fff
+    style L fill:#4CAF50,color:#fff
+      </div>
+    </div>
+  </div>
+
+  <!-- Sitemap -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> Карта разделов (Sitemap)</div>
+    <div class="grid-3">
+      <div class="module" style="border-color:#FF6B35">
+        <h4>🏠 Главная / Dashboard</h4>
+        <p>Онбординг-хаб: шаблоны лид-ботов, шаблоны триггерных сообщений, обучающие видео. Три вкладки: Гид по сервису / Сценарии работы / Общая статистика.</p>
+        <div class="url">/panel/{id}/dashboard</div>
+      </div>
+      <div class="module" style="border-color:#2196F3">
+        <h4>👥 База лидов</h4>
+        <p>CRM-модуль: 3 607 лидов, фильтрация по свойствам / событиям / тегам, сегментация, сохранение сегментов, массовая отправка сообщений.</p>
+        <div class="url">/panel/{id}/users</div>
+      </div>
+      <div class="module" style="border-color:#FF9800">
+        <h4>📧 Триггерные сообщения</h4>
+        <p>Автоматические рассылки: по событиям и по расписанию. Метрики: отправлено, прочитано, ответили, клики, отписки, достижение целей.</p>
+        <div class="url">/panel/{id}/messages/auto</div>
+      </div>
+      <div class="module" style="border-color:#9C27B0">
+        <h4>🔗 Цепочки сообщений</h4>
+        <p>Многошаговые автоматизированные последовательности. В тестовом аккаунте — пусто. Визуальный конструктор воронок.</p>
+        <div class="url">/panel/{id}/trigger-chains</div>
+      </div>
+      <div class="module" style="border-color:#4CAF50">
+        <h4>💬 Диалоги</h4>
+        <p>Live-чат поддержки: 739 диалогов + 0 обращений. Три колонки: список / чат / профиль лида. Назначение оператора, теги, подписки.</p>
+        <div class="url">/panel/{id}/conversations</div>
+      </div>
+      <div class="module" style="border-color:#00BCD4">
+        <h4>🤖 Чат-боты</h4>
+        <p>Welcome-бот (все посетители) + Лид-боты (условия). Каналы: сайт / мобайл, Telegram, MAX, Facebook, Embedded. Метрики конверсии.</p>
+        <div class="url">/panel/{id}/chat-bot</div>
+      </div>
+      <div class="module" style="border-color:#8BC34A">
+        <h4>🧠 AI-бот</h4>
+        <p>Обучение на основе базы знаний или URL сайта. Режимы: AI-поддержка / Настройки. Тестирование диалога. Источники в обработке.</p>
+        <div class="url">/panel/{id}/ai-agents</div>
+      </div>
+      <div class="module" style="border-color:#FF5722">
+        <h4>📊 Аналитика</h4>
+        <p>Отчёт по событиям: частота и уникальные пользователи, временные ряды на amCharts. Фильтрация по типам событий.</p>
+        <div class="url">/panel/{id}/analytics</div>
+      </div>
+      <div class="module" style="border-color:#607D8B">
+        <h4>🔌 Интеграции</h4>
+        <p>Маркетплейс из 20+ интеграций: мессенджеры, CRM, CMS, аналитика, коллтрекинг. Счётчик активных / доступных подключений.</p>
+        <div class="url">/panel/{id}/integrations</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Flow -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> Основные User Flow</div>
+    <div class="mermaid-wrap">
+      <div class="mermaid">
+flowchart LR
+    subgraph VISITOR ["👤 Путь посетителя сайта клиента"]
+        V1["Открыл сайт"] --> V2["Увидел чат-виджет"]
+        V2 --> V3{"Welcome-бот\nактивен?"}
+        V3 -- Да --> V4["Начал диалог с ботом"]
+        V3 -- Нет --> V5["Кнопка чата"]
+        V4 --> V6{"Бот решил\nзапрос?"}
+        V6 -- Да --> V7["✅ Собран контакт"]
+        V6 -- Нет --> V8["Передано оператору"]
+        V5 --> V8
+        V8 --> V9["💬 Живой диалог"]
+    end
+
+    subgraph MARKETER ["🎯 Путь маркетолога"]
+        M1["Открыл панель"] --> M2["Изучил базу лидов"]
+        M2 --> M3["Создал сегмент"]
+        M3 --> M4{"Выбрал инструмент"}
+        M4 --> MA["📧 Триггерное\nсообщение"]
+        M4 --> MB["🔗 Цепочка\nсообщений"]
+        M4 --> MC["🤖 Лид-бот"]
+        MA --> MR["Анализ результатов"]
+        MB --> MR
+        MC --> MR
+    end
+
+    style VISITOR fill:#FFF3E0,stroke:#FF9800
+    style MARKETER fill:#E3F2FD,stroke:#2196F3
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> Технический стек</div>
+    <div class="grid-2">
+      <div class="card">
+        <h4 style="font-size:15px;font-weight:700;margin-bottom:14px;color:var(--subtext)">Frontend</h4>
+        <div>
+          <span class="tech-badge"><span class="dot" style="background:#DD1B16"></span>Angular / AngularJS</span>
+          <span class="tech-badge"><span class="dot" style="background:#4FC08D"></span>Vue.js</span>
+          <span class="tech-badge"><span class="dot" style="background:#0769AD"></span>jQuery 3.6.1</span>
+          <span class="tech-badge"><span class="dot" style="background:#607D8B"></span>Zone.js</span>
+          <span class="tech-badge"><span class="dot" style="background:#FF7043"></span>amCharts (графики)</span>
+        </div>
+        <p style="font-size:12px;color:var(--subtext);margin-top:12px">⚠️ Смешанный стек — признак миграции с AngularJS/jQuery на Angular/Vue. Технический долг.</p>
+      </div>
+      <div class="card">
+        <h4 style="font-size:15px;font-weight:700;margin-bottom:14px;color:var(--subtext)">Backend & Infrastructure</h4>
+        <div>
+          <span class="tech-badge"><span class="dot" style="background:#2196F3"></span>REST API v3</span>
+          <span class="tech-badge"><span class="dot" style="background:#4CAF50"></span>Kubernetes (k8s)</span>
+          <span class="tech-badge"><span class="dot" style="background:#FF6B35"></span>Own Chat SDK</span>
+          <span class="tech-badge"><span class="dot" style="background:#6772E5"></span>Stripe</span>
+          <span class="tech-badge"><span class="dot" style="background:#2196F3"></span>CloudPayments</span>
+          <span class="tech-badge"><span class="dot" style="background:#4285F4"></span>Google Tag Manager</span>
+          <span class="tech-badge"><span class="dot" style="background:#00C4CC"></span>CDN files.carrotquest.io</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Integrations -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> Карта интеграций</div>
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <div class="int-group">
+            <h5>📱 Коммуникации</h5>
+            <span class="int-chip active">✉️ Email</span>
+            <span class="int-chip active">✈️ Telegram (5)</span>
+            <span class="int-chip active">💬 WhatsApp</span>
+            <span class="int-chip">📘 Facebook (6)</span>
+            <span class="int-chip">📷 Instagram (3)</span>
+            <span class="int-chip">VK (2)</span>
+            <span class="int-chip active">MAX (1)</span>
+            <span class="int-chip">Viber</span>
+            <span class="int-chip">Slack</span>
+            <span class="int-chip">Calendly (1)</span>
+          </div>
+          <div class="int-group">
+            <h5>🤝 Help Desk</h5>
+            <span class="int-chip">Zendesk</span>
+            <span class="int-chip">Omnidesk</span>
+            <span class="int-chip">Usedesk</span>
+          </div>
+          <div class="int-group">
+            <h5>🏪 CMS / E-commerce</h5>
+            <span class="int-chip">1С Битрикс</span>
+            <span class="int-chip">Ecwid</span>
+            <span class="int-chip">InSales</span>
+            <span class="int-chip">OpenCart</span>
+            <span class="int-chip">Prestashop</span>
+            <span class="int-chip">WordPress</span>
+          </div>
+        </div>
+        <div>
+          <div class="int-group">
+            <h5>💼 CRM</h5>
+            <span class="int-chip active">amoCRM (2)</span>
+            <span class="int-chip active">Битрикс24 (7)</span>
+            <span class="int-chip active">RetailCRM (1)</span>
+            <span class="int-chip">Email-оповещения</span>
+          </div>
+          <div class="int-group">
+            <h5>📊 Аналитика</h5>
+            <span class="int-chip">Mixpanel</span>
+            <span class="int-chip">Roistat</span>
+            <span class="int-chip">Яндекс.Метрика</span>
+          </div>
+          <div class="int-group">
+            <h5>📞 Коллтрекинг</h5>
+            <span class="int-chip">Alloka</span>
+          </div>
+          <div class="int-group">
+            <h5>💳 Платежи</h5>
+            <span class="int-chip active">Stripe</span>
+            <span class="int-chip active">CloudPayments</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--subtext);margin-top:12px">✅ Активные интеграции — зелёным. Цифра в скобках = количество настроенных подключений.</p>
+    </div>
+  </div>
+
+  <!-- User Stories -->
+  <div class="section">
+    <div class="section-title"><span class="num">6</span> Базовые User Stories</div>
+    <div class="grid-2">
+      <div>
+        <div class="story blue">
+          <h5>👤 Маркетолог</h5>
+          <p><strong>Как маркетолог</strong>, я хочу сегментировать базу лидов по поведенческим событиям и свойствам, чтобы отправлять персонализированные триггерные сообщения нужной аудитории.</p>
+          <div class="ac">✅ Критерий приёмки: Фильтр по 3+ параметрам, сохранение сегмента, запуск рассылки. Метрики: открытия, клики, конверсия.</div>
+        </div>
+        <div class="story green">
+          <h5>🤝 Оператор поддержки</h5>
+          <p><strong>Как оператор</strong>, я хочу видеть все открытые диалоги с историей и профилем лида в одном экране, чтобы быстро отвечать на запросы без переключения между системами.</p>
+          <div class="ac">✅ Критерий приёмки: Трёхколоночный интерфейс, назначение диалога, теги, история покупок.</div>
+        </div>
+        <div class="story orange">
+          <h5>🤖 Продуктовый менеджер</h5>
+          <p><strong>Как PM</strong>, я хочу настроить Welcome-бота для квалификации лидов при первом визите, чтобы автоматически собирать контакты без участия операторов в нерабочее время.</p>
+          <div class="ac">✅ Критерий приёмки: Бот запускается при открытии чата, проводит по сценарию, сохраняет email/телефон.</div>
+        </div>
+      </div>
+      <div>
+        <div class="story purple">
+          <h5>🧠 Технический специалист</h5>
+          <p><strong>Как техспец</strong>, я хочу обучить AI-бота на основе документации компании, чтобы он автоматически отвечал на типовые вопросы в диалогах без привлечения живого оператора.</p>
+          <div class="ac">✅ Критерий приёмки: Загрузка URL/статей, синхронизация базы знаний, тестирование ответов, запуск в чате.</div>
+        </div>
+        <div class="story yellow">
+          <h5>📊 Аналитик</h5>
+          <p><strong>Как аналитик</strong>, я хочу отслеживать события пользователей на сайте в динамике, чтобы измерять эффективность маркетинговых кампаний и находить точки оттока.</p>
+          <div class="ac">✅ Критерий приёмки: График событий по времени, фильтрация по типу события, экспорт данных.</div>
+        </div>
+        <div class="story blue">
+          <h5>🏢 Руководитель</h5>
+          <p><strong>Как руководитель</strong>, я хочу видеть общую статистику работы команды поддержки (скорость ответа, количество диалогов, конверсии ботов), чтобы принимать решения об оптимизации.</p>
+          <div class="ac">✅ Критерий приёмки: Дашборд с ключевыми метриками, выгрузка отчётов, сравнение периодов.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottlenecks -->
+  <div class="section">
+    <div class="section-title"><span class="num">7</span> Узкие места и проблемы</div>
+    <div class="grid-2">
+      <div>
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#C62828">🔴 Критические</h4>
+        <div class="bottleneck high">
+          <div class="icon">⚡</div>
+          <div>
+            <span class="severity">Критично</span>
+            <h5>Медленная загрузка страниц (5–8 сек)</h5>
+            <p>Каждый раздел показывает пустой экран с лоадером 5–8 секунд. SPA с тяжёлым JS-бандлом и без SSR. main-RSLUCEVR.js загружается синхронно.</p>
+          </div>
+        </div>
+        <div class="bottleneck high">
+          <div class="icon">🔧</div>
+          <div>
+            <span class="severity">Критично</span>
+            <h5>Смешанный технический стек</h5>
+            <p>Angular + AngularJS + Vue + jQuery в одном приложении — признак незаконченной миграции. Это ведёт к увеличенному бандлу, конфликтам и сложности поддержки.</p>
+          </div>
+        </div>
+        <div class="bottleneck high">
+          <div class="icon">💸</div>
+          <div>
+            <span class="severity">Критично</span>
+            <h5>Раздражающий баннер подписки</h5>
+            <p>"Оплатите подписку" — оранжевый баннер присутствует на всех страницах, создаёт когнитивную нагрузку и снижает доверие к продукту при первом знакомстве.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#F57F17">🟡 Средней приоритетности</h4>
+        <div class="bottleneck med">
+          <div class="icon">📊</div>
+          <div>
+            <span class="severity">Средний</span>
+            <h5>739 диалогов без видимой приоритизации</h5>
+            <p>Большая очередь диалогов без явного SLA-трекинга, автоматической маршрутизации и приоритизации. Операторы работают вручную в режиме «кто успел».</p>
+          </div>
+        </div>
+        <div class="bottleneck med">
+          <div class="icon">🤖</div>
+          <div>
+            <span class="severity">Средний</span>
+            <h5>Большинство ботов на паузе</h5>
+            <p>Из всех лид-ботов активен только 1 (Max_bot_test). Остальные — приостановлены. AI-бот: все источники «В процессе» — потенциально не работает.</p>
+          </div>
+        </div>
+        <div class="bottleneck med">
+          <div class="icon">🔗</div>
+          <div>
+            <span class="severity">Средний</span>
+            <h5>Цепочки сообщений не используются</h5>
+            <p>Раздел «Цепочки сообщений» — пустой. Мощный инструмент автоматизации не задействован, что снижает ценность платформы для пользователя.</p>
+          </div>
+        </div>
+        <div class="bottleneck low">
+          <div class="icon">🧭</div>
+          <div>
+            <span class="severity">Низкий</span>
+            <h5>Навигация только через иконки без подписей</h5>
+            <p>Левый сайдбар — только иконки без текстовых подписей. Новый пользователь вынужден угадывать разделы, что удлиняет онбординг.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Growth Points -->
+  <div class="section">
+    <div class="section-title"><span class="num">8</span> Точки роста и возможности</div>
+    <div class="grid-2">
+      <div>
+        <div class="growth">
+          <div class="icon">🤖</div>
+          <div>
+            <span class="impact">Высокий импакт</span>
+            <h5>Полноценный запуск AI-бота</h5>
+            <p>AI-бот может закрывать 40–60% типовых обращений автоматически. Сейчас все источники в состоянии обработки — нужно довести до рабочего состояния и замерить deflection rate.</p>
+          </div>
+        </div>
+        <div class="growth">
+          <div class="icon">🔗</div>
+          <div>
+            <span class="impact">Высокий импакт</span>
+            <h5>Активация цепочек сообщений (nurturing)</h5>
+            <p>Цепочки — ключевой инструмент удержания и прогрева. Нулевое использование = нереализованный потенциал. Базовые сценарии: онбординг-цепочка, реактивация.</p>
+          </div>
+        </div>
+        <div class="growth">
+          <div class="icon">📱</div>
+          <div>
+            <span class="impact">Высокий импакт</span>
+            <h5>Мобильный SDK и push-уведомления</h5>
+            <p>Настройки включают Web Push. Судя по SDK (Android 2.0.0 / iOS 3.1.2) — мобильный канал есть, но требует активации. Охват растёт до 2x.</p>
+          </div>
+        </div>
+        <div class="growth">
+          <div class="icon">⚡</div>
+          <div>
+            <span class="impact">Средний импакт</span>
+            <h5>Оптимизация производительности загрузки</h5>
+            <p>Code splitting, lazy loading для модулей, SSR/pre-rendering для первого экрана — могут сократить Time to Interactive с 8 до 2–3 сек. Прямое влияние на retention.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="growth">
+          <div class="icon">🎯</div>
+          <div>
+            <span class="impact">Средний импакт</span>
+            <h5>Автоматическая маршрутизация диалогов</h5>
+            <p>739 диалогов без приоритизации — боль для команд поддержки. Skills-based routing, автотеги по теме обращения и SLA-дедлайны повысят CSAT и скорость ответа.</p>
+          </div>
+        </div>
+        <div class="growth">
+          <div class="icon">📊</div>
+          <div>
+            <span class="impact">Средний импакт</span>
+            <h5>Дашборд руководителя / командные метрики</h5>
+            <p>Сейчас аналитика показывает только события. Не хватает: среднего времени ответа, загрузки операторов, NPS, конверсии по воронке. Ценная функция для retention B2B.</p>
+          </div>
+        </div>
+        <div class="growth">
+          <div class="icon">🌍</div>
+          <div>
+            <span class="impact">Стратегический</span>
+            <h5>Расширение интеграций: HubSpot, Salesforce, Notion</h5>
+            <p>Текущие CRM-интеграции — только российский рынок (amoCRM, Битрикс24). Добавление HubSpot/Salesforce открывает международные рынки.</p>
+          </div>
+        </div>
+        <div class="growth">
+          <div class="icon">🧪</div>
+          <div>
+            <span class="impact">Стратегический</span>
+            <h5>A/B тестирование сценариев ботов</h5>
+            <p>Нет встроенного A/B-тестирования для ботов и триггерных сообщений. Функция критична для оптимизации конверсии — 36.6% завершений Welcome-бота можно поднять.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="section">
+    <div class="section-title"><span class="num">9</span> Итоговая оценка</div>
+    <div class="mermaid-wrap" style="padding:28px 24px 20px;">
+      <p style="text-align:center;font-size:15px;font-weight:700;color:var(--text);margin-bottom:20px;">
+        Оценка модулей по ценности и зрелости
+      </p>
+      <svg id="quadrant" viewBox="0 0 600 480" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:620px;display:block;margin:0 auto;"></svg>
+      <script>
+      (function(){
+        const svg = document.getElementById('quadrant');
+        const W = 600, H = 480;
+        const PAD = { top: 20, right: 30, bottom: 54, left: 60 };
+        const CW = W - PAD.left - PAD.right;
+        const CH = H - PAD.top - PAD.bottom;
+
+        // data: [label, maturity 0-1, value 0-1, color]
+        const points = [
+          ['База лидов',           0.80, 0.85, '#4CAF50'],
+          ['Диалоги',              0.75, 0.90, '#4CAF50'],
+          ['Триг. сообщения',      0.65, 0.80, '#4CAF50'],
+          ['Чат-боты',             0.55, 0.85, '#FF9800'],
+          ['AI-бот',               0.30, 0.90, '#2196F3'],
+          ['Цепочки сообщений',    0.25, 0.85, '#2196F3'],
+          ['Аналитика',            0.45, 0.55, '#FF9800'],
+          ['Интеграции',           0.70, 0.70, '#4CAF50'],
+          ['Главная / Онбординг',  0.60, 0.40, '#9E9E9E'],
+        ];
+
+        function px(maturity){ return PAD.left + maturity * CW; }
+        function py(value)   { return PAD.top  + (1 - value) * CH; }
+
+        // Quadrant backgrounds
+        const quads = [
+          { x: PAD.left,         y: PAD.top,        w: CW/2, h: CH/2, fill: '#FFF9E6', label: 'Потенциал\nне раскрыт', lx: PAD.left + CW*0.13, ly: PAD.top + 18 },
+          { x: PAD.left + CW/2,  y: PAD.top,        w: CW/2, h: CH/2, fill: '#E8F5E9', label: 'Звёзды —\nудерживать', lx: PAD.left + CW*0.63, ly: PAD.top + 18 },
+          { x: PAD.left,         y: PAD.top + CH/2, w: CW/2, h: CH/2, fill: '#FCE4EC', label: 'Пересмотреть', lx: PAD.left + CW*0.13, ly: PAD.top + CH/2 + 18 },
+          { x: PAD.left + CW/2,  y: PAD.top + CH/2, w: CW/2, h: CH/2, fill: '#E3F2FD', label: 'Развивать', lx: PAD.left + CW*0.63, ly: PAD.top + CH/2 + 18 },
+        ];
+
+        const ns = 'http://www.w3.org/2000/svg';
+        function el(tag, attrs, parent){
+          const e = document.createElementNS(ns, tag);
+          for(const [k,v] of Object.entries(attrs)) e.setAttribute(k, v);
+          if(parent) parent.appendChild(e);
+          return e;
+        }
+        function text(content, attrs, parent){
+          const lines = content.split('\n');
+          if(lines.length === 1){
+            const t = el('text', attrs, parent);
+            t.textContent = content;
+            return t;
+          }
+          const g = el('g', {}, parent);
+          lines.forEach((line, i) => {
+            const t = el('text', { ...attrs, y: String(Number(attrs.y || 0) + i * 14) }, g);
+            t.textContent = line;
+          });
+          return g;
+        }
+
+        // Quad backgrounds + labels
+        quads.forEach(q => {
+          el('rect', { x:q.x, y:q.y, width:q.w, height:q.h, fill:q.fill, stroke:'#E0E6EE', 'stroke-width':'1' }, svg);
+          text(q.label, { x:q.lx, y:q.ly, 'font-size':'11', fill:'#9E9E9E', 'font-family':'sans-serif', 'font-weight':'600' }, svg);
+        });
+
+        // Center lines
+        el('line', { x1: PAD.left + CW/2, y1: PAD.top, x2: PAD.left + CW/2, y2: PAD.top + CH, stroke:'#CFD8DC', 'stroke-width':'1.5', 'stroke-dasharray':'5,4' }, svg);
+        el('line', { x1: PAD.left, y1: PAD.top + CH/2, x2: PAD.left + CW, y2: PAD.top + CH/2, stroke:'#CFD8DC', 'stroke-width':'1.5', 'stroke-dasharray':'5,4' }, svg);
+
+        // Axes
+        el('line', { x1: PAD.left, y1: PAD.top + CH, x2: PAD.left + CW, y2: PAD.top + CH, stroke:'#90A4AE', 'stroke-width':'1.5' }, svg);
+        el('line', { x1: PAD.left, y1: PAD.top, x2: PAD.left, y2: PAD.top + CH, stroke:'#90A4AE', 'stroke-width':'1.5' }, svg);
+
+        // Axis labels
+        el('text', { x: PAD.left + CW/2, y: H - 10, 'text-anchor':'middle', 'font-size':'12', fill:'#607D8B', 'font-family':'sans-serif', 'font-weight':'600' }, svg).textContent = '← Низкая зрелость   |   Высокая зрелость →';
+        const yLabel = el('text', { x: 13, y: PAD.top + CH/2, 'text-anchor':'middle', 'font-size':'12', fill:'#607D8B', 'font-family':'sans-serif', 'font-weight':'600', transform: `rotate(-90, 13, ${PAD.top + CH/2})` }, svg);
+        yLabel.textContent = '← Низкая ценность  |  Высокая →';
+
+        // Points + labels
+        // Compute label positions to avoid simple overlaps
+        const labelOffsets = [
+          [8, -10],   // База лидов
+          [8,  12],   // Диалоги
+          [8, -10],   // Триг. сообщения
+          [-110, -10],// Чат-боты
+          [8,  12],   // AI-бот
+          [8, -10],   // Цепочки
+          [8,  12],   // Аналитика
+          [8, -10],   // Интеграции
+          [-120, 14], // Главная
+        ];
+
+        points.forEach(([label, mx, vx, color], i) => {
+          const cx = px(mx), cy = py(vx);
+          el('circle', { cx, cy, r:'7', fill: color, stroke:'white', 'stroke-width':'2', opacity:'0.92' }, svg);
+          const [dx, dy] = labelOffsets[i];
+          el('text', { x: cx + dx, y: cy + dy, 'font-size':'11', fill:'#37474F', 'font-family':'sans-serif', 'font-weight':'600' }, svg).textContent = label;
+        });
+
+        // Legend
+        const legendY = PAD.top + CH + 32;
+        const legendItems = [['#4CAF50','Зрелые / работают'], ['#FF9800','Требуют внимания'], ['#2196F3','Высокий потенциал'], ['#9E9E9E','Второстепенные']];
+        legendItems.forEach(([c, lbl], i) => {
+          const lx = PAD.left + i * 140;
+          el('circle', { cx: lx + 6, cy: legendY, r:'5', fill:c }, svg);
+          el('text', { x: lx + 16, y: legendY + 4, 'font-size':'11', fill:'#607D8B', 'font-family':'sans-serif' }, svg).textContent = lbl;
+        });
+      })();
+      </script>
+    </div>
+    <div style="margin-top:20px" class="card">
+      <p style="font-size:14px;line-height:1.8;color:var(--subtext)">
+        <strong style="color:var(--text)">Carrot Quest</strong> — зрелая B2B SaaS платформа с богатым набором инструментов для автоматизации маркетинга и поддержки клиентов.
+        Продукт существует с 2018 года и накопил значительный технический долг (смешанный стек Angular+Vue+jQuery),
+        однако сохраняет конкурентоспособность за счёт широкой экосистемы интеграций (20+) и развитого канального покрытия.
+        <br><br>
+        Главные приоритеты: <strong style="color:var(--orange)">(1)</strong> оптимизация производительности загрузки,
+        <strong style="color:var(--orange)">(2)</strong> активация AI-бота и цепочек сообщений,
+        <strong style="color:var(--orange)">(3)</strong> улучшение очереди диалогов с приоритизацией.
+        Продукт имеет высокий потенциал роста в сегменте AI-автоматизации поддержки — это направление нужно развивать агрессивно.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'default',
+  themeVariables: {
+    primaryColor: '#FF6B35',
+    primaryTextColor: '#1A2332',
+    primaryBorderColor: '#FF9800',
+    lineColor: '#607D8B',
+    secondaryColor: '#F5F7FA',
+    tertiaryColor: '#E3F2FD'
+  },
+  flowchart: { curve: 'basis', useMaxWidth: true },
+  quadrantChart: { useMaxWidth: true }
+});
+</script>
+</body>
+</html>

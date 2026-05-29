@@ -1,0 +1,607 @@
+{
+  "https://help.carrotquest.io/article/196": {
+    "title": "Базовые принципы автоматизации",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/196"
+  },
+  "https://help.carrotquest.io/article/195": {
+    "title": "Воронки",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/195"
+  },
+  "https://help.carrotquest.io/article/15500": {
+    "title": "Отчёт по событиям",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/15500"
+  },
+  "https://help.carrotquest.io/article/185": {
+    "title": "Шаблоны",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/185"
+  },
+  "https://help.carrotquest.io/article/368": {
+    "title": "Уведомление в Диалоги о заполненной форме в поп-апе",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/368"
+  },
+  "https://help.carrotquest.io/article/187": {
+    "title": "Webhook для сообщений из чата",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/187"
+  },
+  "https://help.carrotquest.io/article/186": {
+    "title": "Создание ботов на основе Webhook",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/186"
+  },
+  "https://help.carrotquest.io/article/179": {
+    "title": "Как вставлять события типа Коммуникация в JS поп-апы",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/179"
+  },
+  "https://help.carrotquest.io/article/1562": {
+    "title": "Настройка сообщений для определённого типа устройств",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1562"
+  },
+  "https://help.carrotquest.io/article/366": {
+    "title": "Автоматическое раскрытие чата",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/366"
+  },
+  "https://help.carrotquest.io/article/367": {
+    "title": "Автоматическое раскрытие чата с определенным сообщением",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/367"
+  },
+  "https://help.carrotquest.io/article/183": {
+    "title": "Цели - измерение эффективности автоматизации",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/183"
+  },
+  "https://help.carrotquest.io/article/174": {
+    "title": "Защита от зацикливания триггерных сообщений и закрытие поп-апа по кнопке",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/174"
+  },
+  "https://help.carrotquest.io/article/274": {
+    "title": "Как создать триггерное сообщение",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/274"
+  },
+  "https://help.carrotquest.io/article/192": {
+    "title": "Конструктор поп-апов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/192"
+  },
+  "https://help.carrotquest.io/article/17103": {
+    "title": "Как записать событие в сообщении",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/17103"
+  },
+  "https://help.carrotquest.io/article/703": {
+    "title": "Тестовая отправка триггерных сообщений",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/703"
+  },
+  "https://help.carrotquest.io/article/336": {
+    "title": "Проверка триггерных сообщений",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/336"
+  },
+  "https://help.carrotquest.io/article/180": {
+    "title": "Статистика триггерных сообщений",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/180"
+  },
+  "https://help.carrotquest.io/article/177": {
+    "title": "Как формируются имя и адрес отправителя в триггерных e-mail рассылках",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/177"
+  },
+  "https://help.carrotquest.io/article/189": {
+    "title": "Триггерный webhook",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/189"
+  },
+  "https://help.carrotquest.io/article/188": {
+    "title": "Триггерный JavaScript",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/188"
+  },
+  "https://help.carrotquest.io/article/184": {
+    "title": "А/Б-тесты",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/184"
+  },
+  "https://help.carrotquest.io/article/182": {
+    "title": "Настройка связанных сценариев",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/182"
+  },
+  "https://help.carrotquest.io/article/190": {
+    "title": "Триггерное сообщение с подпиской на Web push уведомления",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/190"
+  },
+  "https://help.carrotquest.io/article/23983": {
+    "title": "Начало работы с Цепочками",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/23983"
+  },
+  "https://help.carrotquest.io/article/23981": {
+    "title": "Сообщения в Цепочках",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/23981"
+  },
+  "https://help.carrotquest.io/article/23984": {
+    "title": "Типы логических блоков в Цепочках",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/23984"
+  },
+  "https://help.carrotquest.io/article/23985": {
+    "title": "Аналитика в Цепочках",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/23985"
+  },
+  "https://help.carrotquest.io/article/1688": {
+    "title": "Лид-бот",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1688"
+  },
+  "https://help.carrotquest.io/article/8146": {
+    "title": "Welcome-бот",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/8146"
+  },
+  "https://help.carrotquest.io/article/10410": {
+    "title": "Facebook Messenger бот",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/10410"
+  },
+  "https://help.carrotquest.io/article/24288": {
+    "title": "А/Б-тесты для лид-ботов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/24288"
+  },
+  "https://help.carrotquest.io/article/18451": {
+    "title": "Статистика чат-ботов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/18451"
+  },
+  "https://help.carrotquest.io/article/10910": {
+    "title": "Готовые сценарии для чат-ботов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/10910"
+  },
+  "https://help.carrotquest.io/article/15521": {
+    "title": "Как записать свойство и событие в чат-боте",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/15521"
+  },
+  "https://help.carrotquest.io/article/17359": {
+    "title": "Персонализация в чат-ботах",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/17359"
+  },
+  "https://help.carrotquest.io/article/205": {
+    "title": "Ручная рассылка сообщений",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/205"
+  },
+  "https://help.carrotquest.io/article/820": {
+    "title": "Тестовая отправка ручной рассылки",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/820"
+  },
+  "https://help.carrotquest.io/article/209": {
+    "title": "Статус емейл-рассылок",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/209"
+  },
+  "https://help.carrotquest.io/article/1193": {
+    "title": "Ограничение размера писем",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1193"
+  },
+  "https://help.carrotquest.io/article/27367": {
+    "title": "Установка аватара для емейл-рассылки",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/27367"
+  },
+  "https://help.carrotquest.io/article/1027": {
+    "title": "Персонализация сообщения на основе собранных данных",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1027"
+  },
+  "https://help.carrotquest.io/article/16731": {
+    "title": "Как отправить повторное письмо",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/16731"
+  },
+  "https://help.carrotquest.io/article/202": {
+    "title": "Конструктор писем",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/202"
+  },
+  "https://help.carrotquest.io/article/203": {
+    "title": "Статистика ручных сообщений",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/203"
+  },
+  "https://help.carrotquest.io/article/204": {
+    "title": "Внешний вид базового письма",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/204"
+  },
+  "https://help.carrotquest.io/article/200": {
+    "title": "Добавить кнопку &quot;отписаться&quot;",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/200"
+  },
+  "https://help.carrotquest.io/article/198": {
+    "title": "Как формируются имя и адрес отправителя в ручных e-mail рассылках",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/198"
+  },
+  "https://help.carrotquest.io/article/208": {
+    "title": "Прогрев домена",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/208"
+  },
+  "https://help.carrotquest.io/article/22870": {
+    "title": "Если письма попадают в спам",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/22870"
+  },
+  "https://help.carrotquest.io/article/706": {
+    "title": "Как узнать, кто именно пожаловался на спам",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/706"
+  },
+  "https://help.carrotquest.io/article/207": {
+    "title": "Блокировка email-рассылок",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/207"
+  },
+  "https://help.carrotquest.io/article/231": {
+    "title": "Cбор данных: Добавить событие и свойство",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/231"
+  },
+  "https://help.carrotquest.io/article/4297": {
+    "title": "Автоматическая проверка введённых данных",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/4297"
+  },
+  "https://help.carrotquest.io/article/8585": {
+    "title": "Запись события посещения страницы на сайтах с SPA",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/8585"
+  },
+  "https://help.carrotquest.io/article/230": {
+    "title": "Сбор данных для e-commerce",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/230"
+  },
+  "https://help.carrotquest.io/article/8786": {
+    "title": "Сбор данных для e-commerce (Tilda)",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/8786"
+  },
+  "https://help.carrotquest.io/article/16438": {
+    "title": "Как настроить сбор данных из формы сайта на Тильде",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/16438"
+  },
+  "https://help.carrotquest.io/article/229": {
+    "title": "Сбор данных для e-commerce (API)",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/229"
+  },
+  "https://help.carrotquest.io/article/228": {
+    "title": "Сбор данных для SaaS",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/228"
+  },
+  "https://help.carrotquest.io/article/788": {
+    "title": "Сбор данных из формы",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/788"
+  },
+  "https://help.carrotquest.io/article/225": {
+    "title": "Проверка настроенного сбора данных",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/225"
+  },
+  "https://help.carrotquest.io/article/17968": {
+    "title": "Работа с настроенными событиями и свойствами",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/17968"
+  },
+  "https://help.carrotquest.io/article/227": {
+    "title": "Сбор данных о пользователях из различных источников по User ID",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/227"
+  },
+  "https://help.carrotquest.io/article/789": {
+    "title": "Событие &quot;Попытался уйти с сайта&quot;",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/789"
+  },
+  "https://help.carrotquest.io/article/525": {
+    "title": "Присвоение баллов событиям",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/525"
+  },
+  "https://help.carrotquest.io/article/686": {
+    "title": "Запись телефона из поля с маской",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/686"
+  },
+  "https://help.carrotquest.io/article/23183": {
+    "title": "Запись даты и времени в свойство пользователя",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/23183"
+  },
+  "https://help.carrotquest.io/article/23184": {
+    "title": "Запись даты и времени в атрибуты событий",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/23184"
+  },
+  "https://help.carrotquest.io/article/224": {
+    "title": "Определение CSS селекторов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/224"
+  },
+  "https://help.carrotquest.io/article/939": {
+    "title": "Запись IP в свойство пользователя",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/939"
+  },
+  "https://help.carrotquest.io/article/226": {
+    "title": "Как работает событие &quot;Зашёл на сайт&quot;",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/226"
+  },
+  "https://help.carrotquest.io/article/526": {
+    "title": "Запись ClientID",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/526"
+  },
+  "https://help.carrotquest.io/article/223": {
+    "title": "Дополнительные возможности сбора данных",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/223"
+  },
+  "https://help.carrotquest.io/article/263": {
+    "title": "База лидов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/263"
+  },
+  "https://help.carrotquest.io/article/267": {
+    "title": "Пользователи, которые сейчас онлайн",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/267"
+  },
+  "https://help.carrotquest.io/article/262": {
+    "title": "Карточка пользователя",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/262"
+  },
+  "https://help.carrotquest.io/article/701": {
+    "title": "Как найти свою карточку пользователя",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/701"
+  },
+  "https://help.carrotquest.io/article/260": {
+    "title": "Импорт пользователей",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/260"
+  },
+  "https://help.carrotquest.io/article/8191": {
+    "title": "Перенос данных из Intercom в Carrot quest",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/8191"
+  },
+  "https://help.carrotquest.io/article/6976": {
+    "title": "Перенос базы пользователей из сторонних сервисов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/6976"
+  },
+  "https://help.carrotquest.io/article/18565": {
+    "title": "Персонализация по атрибутам события",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/18565"
+  },
+  "https://help.carrotquest.io/article/1024": {
+    "title": "Персонализация по свойствам лида",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1024"
+  },
+  "https://help.carrotquest.io/article/259": {
+    "title": "Экспорт пользователей",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/259"
+  },
+  "https://help.carrotquest.io/article/261": {
+    "title": "Сегментация",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/261"
+  },
+  "https://help.carrotquest.io/article/1021": {
+    "title": "Примеры сегментации",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1021"
+  },
+  "https://help.carrotquest.io/article/1523": {
+    "title": "Сегментация по местоположению пользователя",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1523"
+  },
+  "https://help.carrotquest.io/article/1022": {
+    "title": "Чем теги отличаются от свойств пользователя?",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1022"
+  },
+  "https://help.carrotquest.io/article/246": {
+    "title": "Раздел Диалоги",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/246"
+  },
+  "https://help.carrotquest.io/article/28480": {
+    "title": "Обращения (бета-версия)",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/28480"
+  },
+  "https://help.carrotquest.io/article/239": {
+    "title": "Настройка чата",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/239"
+  },
+  "https://help.carrotquest.io/article/243": {
+    "title": "Аналитика диалогов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/243"
+  },
+  "https://help.carrotquest.io/article/242": {
+    "title": "Оценка работы операторов чата",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/242"
+  },
+  "https://help.carrotquest.io/article/3648": {
+    "title": "Cтатус оператора",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/3648"
+  },
+  "https://help.carrotquest.io/article/22080": {
+    "title": "Упоминания операторов в заметках диалогов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/22080"
+  },
+  "https://help.carrotquest.io/article/241": {
+    "title": "Оповещения операторам",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/241"
+  },
+  "https://help.carrotquest.io/article/17984": {
+    "title": "Автоматическое распределение диалогов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/17984"
+  },
+  "https://help.carrotquest.io/article/2529": {
+    "title": "Сохраненные ответы",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/2529"
+  },
+  "https://help.carrotquest.io/article/1789": {
+    "title": "Редактирование и удаление сообщений операторов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1789"
+  },
+  "https://help.carrotquest.io/article/244": {
+    "title": "Распределение диалогов по каналам",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/244"
+  },
+  "https://help.carrotquest.io/article/7234": {
+    "title": "Склейка пользователей чата и мессенджеров",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/7234"
+  },
+  "https://help.carrotquest.io/article/240": {
+    "title": "Приложения для операторов на смартфоны и ПК",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/240"
+  },
+  "https://help.carrotquest.io/article/24764": {
+    "title": "Шаблоны WhatsApp* в Диалогах",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/24764"
+  },
+  "https://help.carrotquest.io/article/238": {
+    "title": "Дополнительные настройки чата",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/238"
+  },
+  "https://help.carrotquest.io/article/21804": {
+    "title": "Расширенная выгрузка диалогов",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/21804"
+  },
+  "https://help.carrotquest.io/article/266": {
+    "title": "Поп-ап о брошенной корзине",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/266"
+  },
+  "https://help.carrotquest.io/article/265": {
+    "title": "Письмо о брошенной корзине",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/265"
+  },
+  "https://help.carrotquest.io/article/264": {
+    "title": "Поп-ап при попытке ухода с сайта",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/264"
+  },
+  "https://help.carrotquest.io/article/15492": {
+    "title": "Как создать опрос",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/15492"
+  },
+  "https://help.carrotquest.io/article/411": {
+    "title": "Подключение, создание и настройка Базы знаний",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/411"
+  },
+  "https://help.carrotquest.io/article/374": {
+    "title": "Как подключить свой домен для базы знаний",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/374"
+  },
+  "https://help.carrotquest.io/article/18001": {
+    "title": "Оптимизация работы с AI-ботом",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/18001"
+  },
+  "https://help.carrotquest.io/article/26198": {
+    "title": "Регистрация в сервисе",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/26198"
+  },
+  "https://help.carrotquest.io/article/235": {
+    "title": "Установка сервиса",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/235"
+  },
+  "https://help.carrotquest.io/article/24281": {
+    "title": "Установка нескольких скриптов на один сайт",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/24281"
+  },
+  "https://help.carrotquest.io/article/233": {
+    "title": "Основные понятия",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/233"
+  },
+  "https://help.carrotquest.io/article/268": {
+    "title": "Общая статистика по сайту",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/268"
+  },
+  "https://help.carrotquest.io/article/1448": {
+    "title": "Поддержка Carrot quest",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/1448"
+  },
+  "https://help.carrotquest.io/article/2099": {
+    "title": "Анонимность пользователей и Carrot quest",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/2099"
+  },
+  "https://help.carrotquest.io/article/10099": {
+    "title": "Минимальные требования к версии браузера",
+    "content": "",
+    "url": "https://help.carrotquest.io/article/10099"
+  }
+}
