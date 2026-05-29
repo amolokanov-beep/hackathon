@@ -250,4 +250,9 @@ function start(port, attemptsLeft = 10) {
   });
 }
 
-start(PORT);
+// Локально — запускаем сервер; на Vercel — экспортируем app как serverless handler
+if (require.main === module) {
+  start(PORT);
+}
+
+module.exports = app;
